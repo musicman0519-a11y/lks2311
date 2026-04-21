@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관리자 페이지 | 이경세 마케팅 연구소</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1A1F36;
+    --navy-mid: #252A47;
+    --orange: #FF6B2C;
+    --orange-light: #FF8C56;
+    --orange-pale: #FFF4EF;
+    --white: #FFFFFF;
+    --gray: #6B7280;
+    --light-gray: #F5F6FA;
+    --border: #E8EAEF;
+    --text-dark: #111827;
+    --text-mid: #374151;
+    --success: #10B981;
+    --danger: #EF4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--light-gray);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* ══════════════════════════════════
+     LOGIN SCREEN
+  ══════════════════════════════════ */
+  .login-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .login-box {
+    background: white;
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .login-logo {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.6rem;
+    color: var(--navy);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .login-sub {
+    font-size: 0.85rem;
+    color: var(--gray);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .login-box label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-mid);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .login-box input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .login-box input:focus {
+    outline: none;
+    border-color: var(--orange);
+  }
+  .login-btn {
+    width: 100%;
+    background: var(--orange);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: background 0.2s;
+    font-family: inherit;
+  }
+  .login-btn:hover { background: var(--orange-light); }
+  .login-error {
+    color: var(--danger);
+    font-size: 0.82rem;
+    margin-top: 12px;
+    text-align: center;
+    display: none;
+  }
+  .login-error.show { display: block; }
+  .login-hidden { display: none !important; }
+
+  /* ══════════════════════════════════
+     ADMIN LAYOUT
+  ══════════════════════════════════ */
+  .admin-header {
+    background: var(--navy);
+    color: white;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.1);
+  }
+  .admin-logo {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+  }
+  .admin-logo span {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 400;
+    font-size: 0.7rem;
+    color: var(--orange-light);
+    margin-left: 8px;
+  }
+  .header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .header-btn {
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .header-btn:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.3);
+  }
+  .header-btn.primary {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: white;
+  }
+  .header-btn.primary:hover { background: var(--orange-light); border-color: var(--orange-light); }
+
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: white;
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    overflow-y: auto;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+  }
+  .sidebar-title {
+    font-size: 0.7rem;
+    color: var(--gray);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0 24px 12px;
+  }
+  .sidebar-nav { list-style: none; }
+  .sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 24px;
+    color: var(--text-mid);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .sidebar-nav a:hover {
+    background: var(--orange-pale);
+    color: var(--orange);
+  }
+  .sidebar-nav a.active {
+    background: var(--orange-pale);
+    color: var(--orange);
+    border-left-color: var(--orange);
+    font-weight: 700;
+  }
+  .sidebar-nav .icon { font-size: 1.05rem; }
+
+  /* MAIN CONTENT */
+  .main-content {
+    padding: 32px;
+    max-width: 1100px;
+  }
+  .page-header {
+    margin-bottom: 28px;
+  }
+  .page-badge {
+    display: inline-block;
+    background: var(--orange-pale);
+    color: var(--orange);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 12px;
+    border-radius: 50px;
+    margin-bottom: 12px;
+  }
+  .page-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.75rem;
+    color: var(--navy);
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+  .page-desc {
+    color: var(--gray);
+    font-size: 0.88rem;
+  }
+
+  /* PANELS */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid var(--border);
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-desc {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-bottom: 18px;
+  }
+
+  /* FORM ELEMENTS */
+  .field-group { margin-bottom: 16px; }
+  .field-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+  }
+  .field-hint {
+    font-size: 0.72rem;
+    color: var(--gray);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+  .field-input,
+  .field-textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background: var(--light-gray);
+    transition: all 0.15s;
+    color: var(--text-dark);
+  }
+  .field-input:focus,
+  .field-textarea:focus {
+    outline: none;
+    border-color: var(--orange);
+    background: white;
+  }
+  .field-textarea {
+    resize: vertical;
+    min-height: 60px;
+    line-height: 1.55;
+  }
+
+  /* SUB-ITEM GRID */
+  .item-grid {
+    display: grid;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .item-box {
+    background: var(--light-gray);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+  }
+  .item-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .item-box-num {
+    background: var(--orange);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 50px;
+  }
+  .list-editor {
+    list-style: none;
+    margin-top: 8px;
+  }
+  .list-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .list-row input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background: white;
+  }
+  .list-row input:focus {
+    outline: none;
+    border-color: var(--orange);
+  }
+  .btn-sm {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--text-mid);
+    transition: all 0.15s;
+  }
+  .btn-sm:hover { border-color: var(--orange); color: var(--orange); }
+  .btn-sm.danger:hover { border-color: var(--danger); color: var(--danger); }
+  .btn-add {
+    background: transparent;
+    color: var(--orange);
+    border: 1.5px dashed var(--orange);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    margin-top: 8px;
+    transition: all 0.15s;
+  }
+  .btn-add:hover { background: var(--orange-pale); }
+
+  /* STATUS MESSAGE */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--navy);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s;
+    z-index: 1000;
+    pointer-events: none;
+    max-width: 340px;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .toast.success { background: var(--success); }
+  .toast.error { background: var(--danger); }
+
+  /* GUIDE */
+  .guide-box {
+    background: linear-gradient(135deg, #FFF4EF 0%, #FFEAE0 100%);
+    border-left: 3px solid var(--orange);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.84rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+  .guide-box strong { color: var(--orange); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .sidebar {
+      position: static;
+      height: auto;
+      padding: 16px 0;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-nav {
+      display: flex;
+      overflow-x: auto;
+      gap: 4px;
+      padding: 0 16px;
+    }
+    .sidebar-nav a {
+      border-left: none;
+      border-bottom: 3px solid transparent;
+      padding: 8px 14px;
+      white-space: nowrap;
+      border-radius: 6px;
+    }
+    .sidebar-nav a.active {
+      border-left: none;
+      border-bottom-color: var(--orange);
+    }
+    .sidebar-title { display: none; }
+    .main-content { padding: 20px 16px; }
+    .admin-header { padding: 0 16px; }
+    .admin-logo span { display: none; }
+    .header-btn { padding: 7px 10px; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LOGIN SCREEN
+═══════════════════════════════════════════════════════════════ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">이경세 마케팅 연구소</div>
+    <div class="login-sub">관리자 페이지 · Admin Panel</div>
+    <label for="pwInput">비밀번호</label>
+    <input type="password" id="pwInput" placeholder="비밀번호를 입력하세요" autocomplete="current-password">
+    <button class="login-btn" onclick="tryLogin()">로그인 →</button>
+    <div class="login-error" id="loginError">비밀번호가 일치하지 않습니다.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ADMIN HEADER
+═══════════════════════════════════════════════════════════════ -->
+<div class="admin-header">
+  <div class="admin-logo">
+    이경세 마케팅 연구소 <span>ADMIN PANEL</span>
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" onclick="previewSite()">👁 미리보기</button>
+    <button class="header-btn" onclick="saveLocal()">💾 임시 저장</button>
+    <button class="header-btn primary" onclick="exportJSON()">⬇ JSON 내보내기</button>
+    <button class="header-btn" onclick="logout()">로그아웃</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN LAYOUT
+═══════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">메인 홈페이지</div>
+    <ul class="sidebar-nav">
+      <li><a class="active" data-panel="hero"><span class="icon">🎯</span> Hero 상단 배너</a></li>
+      <li><a data-panel="problem"><span class="icon">❗</span> 문제 인식</a></li>
+      <li><a data-panel="solution"><span class="icon">🔧</span> 해결 구조</a></li>
+      <li><a data-panel="target"><span class="icon">🏥</span> 대상 업종</a></li>
+      <li><a data-panel="diff"><span class="icon">⚖</span> 차별화</a></li>
+      <li><a data-panel="curriculum"><span class="icon">📚</span> 교육 과정</a></li>
+      <li><a data-panel="pricing"><span class="icon">💰</span> 비용 안내</a></li>
+      <li><a data-panel="results"><span class="icon">📈</span> 성과 사례</a></li>
+      <li><a data-panel="cta"><span class="icon">📞</span> 상담 CTA</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- ═════════ HERO ═════════ -->
+    <div class="panel active" id="panel-hero">
+      <div class="page-header">
+        <div class="page-badge">MAIN · 01</div>
+        <h1 class="page-title">Hero 상단 배너</h1>
+        <div class="page-desc">사이트 최상단에 표시되는 메인 카피와 통계 수치를 관리합니다.</div>
+      </div>
+
+      <div class="guide-box">
+        💡 <strong>Tip:</strong> 줄바꿈은 문장을 나누고 싶은 위치에서 Enter만 누르세요. (HTML 태그 입력 불필요)
+      </div>
+
+      <div class="card">
+        <div class="card-title">📝 메인 카피</div>
+        <div class="field-group">
+          <label class="field-label">상단 뱃지</label>
+          <input class="field-input" data-k="hero.badge" placeholder="예: 헬스케어·뷰티 전문 마케팅 연구소">
+        </div>
+        <div class="field-group">
+          <label class="field-label">메인 타이틀</label>
+          <textarea class="field-textarea" data-k="hero.title" rows="3" placeholder="메인 타이틀 (강조는 *별표*로 감싸면 오렌지색으로 표시됩니다)"></textarea>
+          <div class="field-hint">예시: 광고 대행이 아닌,\n*마케팅 구조를 설계합니다*</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">서브 설명</label>
+          <textarea class="field-textarea" data-k="hero.sub" rows="3"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">업종 태그 (콤마로 구분)</label>
+          <input class="field-input" data-k="hero.tags" placeholder="🏥 병원·의원, 💊 제약회사, 💄 화장품·뷰티, 🔬 헬스케어">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 성과 카드 (4개)</div>
+        <div class="card-desc">우측 상단 네이비 박스에 표시되는 핵심 수치입니다.</div>
+        <div id="hero-stats" class="item-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔘 하단 버튼</div>
+        <div class="field-group">
+          <label class="field-label">주 버튼 텍스트</label>
+          <input class="field-input" data-k="hero.btn1">
+        </div>
+        <div class="field-group">
+          <label class="field-label">보조 버튼 텍스트</label>
+          <input class="field-input" data-k="hero.btn2">
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PROBLEM ═════════ -->
+    <div class="panel" id="panel-problem">
+      <div class="page-header">
+        <div class="page-badge">MAIN · 02</div>
+        <h1 class="page-title">문제 인식</h1>
+        <div class="page-desc">고객이 겪는 마케팅 문제 4가지를 관리합니다.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📌 섹션 헤더</div>
+        <div class="field-group">
+          <label class="field-label">타이틀</label>
+          <textarea class="field-textarea" data-k="problem.title" rows="2"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">서브 설명</label>
+          <input class="field-input" data-k="problem.sub">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 문제 4가지</div>
+        <div id="problem-items" class="item-grid"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎯 하단 강조 박스</div>
+        <div class="field-group">
+          <label class="field-label">강조 문구 (*별표*로 강조 표시)</label>
+          <textarea class="field-textarea" data-k="problem.cta" rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ SOLUTION ═════════ -->
+    <div class="panel" id="panel-solution">
+      <div class="page-header">
+        <div class="page-badge">MAIN · 03</div>
+        <h1 class="page-title">해결 구조</h1>
+        <div class="page-desc">4단계 플로우를 관리합니다.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📌 섹션 헤더</div>
+        <div class="field-group">
+          <label class="field-label">타이틀</label>
+          <textarea class="field-textarea" data-k="solution.title" rows="2"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">서브 설명</label>
+          <input class="field-input" data-k="solution.sub">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔄 4단계 구조</div>
+        <div id="solution-steps" class="item-grid"></div>
+      </div>
+    </div>
+
+    <!-- ═════════ TARGET ═════════ -->
+    <div class="panel" id="panel-target">
+      <div class="page-header">
+        <div class="page-badge">MAIN · 04</div>
+        <h1 class="page-title">대상 업종</h1>
+        <div class="page-desc">병원·제약·뷰티 3개 업종 카드를 관리합니다.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📌 섹션 헤더</div>
+        <div class="field-group">
+          <label class="field-label">타이틀</label>
+          <textarea class="field-textarea" data-k="target.title" rows="2"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">서브 설명</label>
+          <input class="field-input" data-k="target.sub">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🏥 업종 카드 3개</div>
+        <div id="target-cards" class="item-grid"></div>
+      </div>
+    </div>
+
+    <!-- ═════════ DIFFERENTIATION ═════════ -->
+    <div class="panel" id="panel-diff">
+      <div class="page-header">
+        <div class="page-badge">MAIN · 05</div>
+        <h1 class="page-title">차별화</h1>
+        <div class="page-desc">기존 대행사와의 비교 및 차별점을 관리합니다.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📌 섹션 헤더</div>
+        <div class="field-group">
+          <label class="field-label">타이틀</label>
+          <textarea class="field-textarea" data-k="diff.title" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚖ 비교 항목 (기존 대행사 vs 연구소)</div>
+        <div id="diff-compares" class="item-grid"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">✨ 차별점 4가지</div>
+        <div id="diff-items" class="item-grid"></div>
+      </div>
+    </div>
+
+    <!-- ═════════ CURRICULUM ═════════ -->
+    <div class="panel" id="panel-curriculum">
+      <div class="page-header">
+        <div class="page-badge">MAIN · 06</div>
+        <h1 class="page-title">교육 과정</h1>
+        <div class="page-desc">6개의 교육 과정 카드를 관리합니다.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📌 섹션 헤더</div>
+        <div class="field-group">
+          <label class="field-label">타이틀</label>
+          <textarea class="field-textarea" data-k="curriculum.title" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📚 교육 과정 카드</div>
+        <div id="curriculum-cards" class="item-grid"></div>
+      </div>
+    </div>
+
+    <!-- ═════════ PRICING ═════════ -->
+    <div class="panel" id="panel-pricing">
+      <div class="page-header">
+        <div class="page-badge">MAIN · 07</div>
+        <h1 class="page-title">비용 안내</h1>
+        <div class="page-desc">3개의 가격 패키지를 관리합니다.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📌 섹션 헤더</div>
+        <div class="field-group">
+          <label class="field-label">타이틀</label>
+          <textarea class="field-textarea" data-k="pricing.title" rows="2"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">서브 설명</label>
+          <input class="field-input" data-k="pricing.sub">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">💰 가격 패키지 3개</div>
+        <div id="pricing-cards" class="item-grid"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎓 하단 교육 안내 박스</div>
+        <div class="field-group">
+          <label class="field-label">안내 문구</label>
+          <textarea class="field-textarea" data-k="pricing.bottom" rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ RESULTS ═════════ -->
+    <div class="panel" id="panel-results">
+      <div class="page-header">
+        <div class="page-badge">MAIN · 08</div>
+        <h1 class="page-title">성과 사례</h1>
+        <div class="page-desc">핵심 수치 4개와 성과 사례 3건을 관리합니다.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📌 섹션 헤더</div>
+        <div class="field-group">
+          <label class="field-label">타이틀</label>
+          <textarea class="field-textarea" data-k="results.title" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 핵심 수치 4개</div>
+        <div id="results-stats" class="item-grid"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📝 성과 사례 카드</div>
+        <div id="results-cases" class="item-grid"></div>
+      </div>
+    </div>
+
+    <!-- ═════════ CTA ═════════ -->
+    <div class="panel" id="panel-cta">
+      <div class="page-header">
+        <div class="page-badge">MAIN · 09</div>
+        <h1 class="page-title">상담 CTA</h1>
+        <div class="page-desc">하단 상담 신청 섹션을 관리합니다.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📌 메인 카피</div>
+        <div class="field-group">
+          <label class="field-label">타이틀 (*별표*로 강조)</label>
+          <textarea class="field-textarea" data-k="cta.title" rows="2"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">서브 설명</label>
+          <textarea class="field-textarea" data-k="cta.sub" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📞 전화 버튼</div>
+        <div class="field-group">
+          <label class="field-label">전화번호</label>
+          <input class="field-input" data-k="cta.phone" placeholder="010-7475-7744">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📍 하단 정보</div>
+        <div class="field-group">
+          <label class="field-label">서비스 지역</label>
+          <input class="field-input" data-k="cta.region">
+        </div>
+        <div class="field-group">
+          <label class="field-label">상담 가능 시간</label>
+          <input class="field-input" data-k="cta.hours">
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ══════════════════════════════════════════════════════
+     🔐 비밀번호 설정 — 아래 변수를 원하는 비밀번호로 바꾸세요
+  ══════════════════════════════════════════════════════ */
+  const ADMIN_PASSWORD = 'lks2311!@#!';
+
+  /* ══════════════════════════════════════════════════════
+     DEFAULT DATA (현재 사이트 내용 기반)
+  ══════════════════════════════════════════════════════ */
+  const DEFAULT_DATA = {
+    hero: {
+      badge: '헬스케어·뷰티 전문 마케팅 연구소',
+      title: '광고 대행이 아닌,\n*마케팅 구조를\n설계합니다*',
+      sub: '병원·제약·화장품 업종의 실무를 직접 경험한 전문가가\n기업이 스스로 이해하고 성장할 수 있는\n마케팅 전략 구조를 설계하고 교육합니다.',
+      tags: '🏥 병원·의원, 💊 제약회사, 💄 화장품·뷰티, 🔬 헬스케어',
+      btn1: '무료 전략 상담 →',
+      btn2: '성과 사례 보기',
+      stats: [
+        { num: '3', unit: '배+', desc: '전략 구조 도입 후 평균 문의 증가율' },
+        { num: '90', unit: '%', desc: '고객 여정의 네이버 검색 시작 비율' },
+        { num: '1', unit: '~3위', desc: '핵심 키워드 상위권 진입 목표' },
+        { num: '010', unit: '-7475-7744', desc: '직통 상담 연락처' }
+      ]
+    },
+    problem: {
+      title: '지금 마케팅에\n이런 문제가 있으신가요?',
+      sub: '대부분의 헬스케어·뷰티 기업이 겪는 마케팅의 구조적 한계',
+      items: [
+        { title: '광고비는 계속 나가는데 매출은 제자리', desc: '단순 노출 위주의 광고 운영으로 클릭은 있지만 실제 예약·문의·구매로 이어지지 않는 구조가 반복됩니다.' },
+        { title: '대행사에 맡겼지만 무슨 일이 일어나는지 모름', desc: '리뷰 N건, 게시물 N회 같은 단순 이행 보고만 받고, 전략적 방향성 없이 비용만 지출되는 1년 장기계약 구조에 갇혀 있습니다.' },
+        { title: '헬스케어·뷰티 업종 특성을 모르는 대행', desc: '병원 광고 규제, 제약 마케팅 법적 제한, 화장품 성분 마케팅 등 업종 특수성을 이해하지 못한 일반적 마케팅이 적용됩니다.' },
+        { title: '마케팅 내재화가 안 돼 언제나 의존적', desc: '담당자가 바뀌거나 대행사와 계약이 종료되면 처음부터 다시 시작. 기업 내부에 마케팅 구조와 역량이 쌓이지 않습니다.' }
+      ],
+      cta: '결과: 비용은 증가하지만\n*매출은 제자리입니다.*'
+    },
+    solution: {
+      title: '결과에서 전환까지\n이어지는 4단계 구조',
+      sub: '단순 대행이 아닌, 기업이 직접 이해하고 운영할 수 있는 구조를 설계합니다',
+      steps: [
+        { icon: '📊', title: '결과 사례 제시', desc: '동종 업계의 실제 성과 데이터로 신뢰 형성. 추상적 약속이 아닌 수치로 보여줍니다.' },
+        { icon: '🔍', title: '문제 인식 구조화', desc: '현재 마케팅의 구조적 문제를 진단하고, 어디서 매출이 새고 있는지 정확히 파악합니다.' },
+        { icon: '🏗️', title: '해결 구조 설계', desc: '업종·지역·경쟁 상황에 맞는 맞춤형 마케팅 구조를 설계하고 실행 로드맵을 제시합니다.' },
+        { icon: '🎓', title: '교육·상담 전환', desc: '내부 역량을 키우는 교육과 고단가 전략 컨설팅으로 연결. 기업이 직접 성장하는 구조를 만듭니다.' }
+      ]
+    },
+    target: {
+      title: '헬스케어·뷰티 업종\n특화 마케팅 전략',
+      sub: '업종별 규제와 특성을 이해한 실무 경험 기반의 전략을 제공합니다',
+      cards: [
+        {
+          icon: '🏥', industry: 'Healthcare · 병원·의원',
+          title: '병원·의원·한의원\n전문 마케팅 구조',
+          items: ['의료광고 심의 규정 준수 전략', '네이버 플레이스 상위노출 구조화', '전문성 기반 콘텐츠 마케팅 설계', '신환 유입 → 재진 전환 구조', '온라인 예약 전환율 극대화']
+        },
+        {
+          icon: '💊', industry: 'Pharmaceutical · 제약',
+          title: '제약회사·바이오\nB2B·B2C 마케팅 전략',
+          items: ['약사법 준수 마케팅 구조 설계', 'HCP 대상 전문의약품 인지도 전략', '일반의약품 소비자 마케팅 설계', '학술 마케팅·KOL 활용 전략', '디지털 채널 통합 전략']
+        },
+        {
+          icon: '💄', industry: 'Beauty · 화장품·뷰티',
+          title: '화장품·뷰티 브랜드\n매출형 마케팅 구조',
+          items: ['성분 기반 콘텐츠 마케팅 전략', '네이버 쇼핑·스마트스토어 최적화', '인플루언서 마케팅 구조 설계', '화장품 광고 표시기준 준수 전략', 'D2C 브랜드 성장 구조화']
+        }
+      ]
+    },
+    diff: {
+      title: '일반 대행사와\n무엇이 다른가',
+      compares: [
+        { bad: '1년 장기계약, 유연성 없음', good: '유연한 계약 구조, 성과 중심' },
+        { bad: '리뷰·게시물 수 단순 이행', good: '매출 데이터 기반 전략 운영' },
+        { bad: '데이터 분석·성과 개선 없음', good: '숫자와 트렌드 기반 방향 조정' },
+        { bad: '추가 비용 계속 발생', good: '투명한 올인원 비용 구조' },
+        { bad: '기업 내부 역량 미축적', good: '교육으로 내재화 역량 구축' }
+      ],
+      items: [
+        { icon: '📈', title: '매출 중심 전략 운영', desc: '클라이언트의 비즈니스 성장에 집중. 단순 이행이 아닌 실제 매출로 이어지는 구조를 함께 고민합니다.' },
+        { icon: '🎯', title: '정확한 전략 수립 능력', desc: '업종·지역·경쟁 상황에 맞는 맞춤형 솔루션. 헬스케어·뷰티 실무 경험으로 업종 특성을 정확히 반영합니다.' },
+        { icon: '🔢', title: '데이터 기반 방향성 제시', desc: '숫자와 트렌드를 읽고 전략을 조정하는 능력. 감이 아닌 데이터로 의사결정을 지원합니다.' },
+        { icon: '🏫', title: '교육으로 내재화까지', desc: '외부 의존이 아닌 기업 내부 역량으로 전환. 실전 교육을 통해 스스로 운영할 수 있는 구조를 만듭니다.' }
+      ]
+    },
+    curriculum: {
+      title: '마케팅 내재화를 위한\n실전 교육 프로그램',
+      cards: [
+        { title: '네이버 플레이스\n상위노출 전략과정', items: ['플레이스 완전 세팅 (카테고리·키워드·사진·리뷰)', 'CPC 상위노출 운영 실전', '핵심 키워드 1~3위 안착 전략', '리뷰 구조 설계 및 관리', '데이터 분석 및 성과 개선'] },
+        { title: '헬스케어·뷰티\n콘텐츠 마케팅 과정', items: ['업종별 규제 준수 콘텐츠 전략', '전문성 기반 신뢰 콘텐츠 제작', 'SNS 채널별 콘텐츠 전략 차별화', '성분·효능 기반 마케팅 메시지', '콘텐츠 캘린더 운영 구조'] },
+        { title: '디지털 광고\n매출 전환 과정', items: ['당근마켓 CPC 지역 광고 운영', '네이버 검색광고 구조 설계', '광고 단가 최적화 전략', '전환율 분석 및 랜딩 최적화', '광고비 ROI 측정 체계 구축'] },
+        { title: '마케팅 전략 설계\n프리미엄 컨설팅', items: ['1:1 현황 진단 및 전략 수립', '업종·지역·경쟁 맞춤 솔루션', '월간 방문 점검 및 피드백', '성과 데이터 리뷰 및 전략 조정', '장기 성장 로드맵 설계'] },
+        { title: '브랜드 디자인\n마케팅 기초과정', items: ['프로필·콘텐츠·이벤트 카드 디자인', '브랜드 아이덴티티 구축 기초', '업종별 비주얼 마케팅 전략', '디자인 템플릿 자체 운영', '인스타그램 피드 구성 전략'] },
+        { title: '기업 마케팅팀\n역량 강화 교육', items: ['마케팅 담당자 실무 교육', '데이터 분석 도구 활용', '채널별 운영 매뉴얼 구축', '마케팅 KPI 설정 및 관리', '내부 마케팅 내재화 완성'] }
+      ]
+    },
+    pricing: {
+      title: '투명한 비용 구조\n추가 비용 없는 올인원',
+      sub: '광고 단가표 기반의 불투명한 추가 청구 없이, 처음부터 명확한 구조를 제시합니다',
+      cards: [
+        { step: 'Package 1', title: '기본 관리 패키지', price: '30', unit: '만원', note: '/ 월 기본 관리비', features: ['플레이스 관리 및 최적화', '키워드 분석 및 전략 수립', '기본 디자인 제공 (프로필·카드)', '당근 광고 세팅 포함', '월간 방문 상담·점검'], total: '추가 비용 없음', featured: false },
+        { step: 'Package 2', title: '플레이스 상위노출', price: '50~80', unit: '만원', note: '/ 핵심 키워드 CPC 광고 운영비', features: ['핵심 키워드 상위 1~3위 진입', 'CPC 광고 집행 및 최적화', '경쟁 키워드 분석 및 대응', '클릭률·전환율 개선 전략', '월간 성과 리포트 제공'], total: '키워드 경쟁도에 따라 조정', featured: true },
+        { step: 'Package 3', title: '당근 지역 광고', price: '30', unit: '만원', note: '/ 1개월 기준', features: ['지역 상권·업종 대상 CPC 광고', '당근 광고 세팅 완료 후 운영', '지역 타겟 최적화', '실전 유입 확보 전략', '성과 분석 및 조정'], total: '세팅비 별도 없음', featured: false }
+      ],
+      bottom: '전략 컨설팅 및 교육 과정은\n상담 후 맞춤 설계됩니다'
+    },
+    results: {
+      title: '데이터로 증명하는\n실제 성과',
+      stats: [
+        { num: '80', unit: '%', label: '상위 1~3위 노출 시\n클릭률 집중 구간' },
+        { num: '90', unit: '%', label: '고객 여정의\n네이버 검색 시작' },
+        { num: '3', unit: '배+', label: '전략 구조 도입 후\n평균 문의 증가' },
+        { num: '500', unit: '만원+', label: '월 매출 증가\n달성 사례' }
+      ],
+      cases: [
+        { industry: '🏥 병원·의원', title: '지역 피부과 네이버 플레이스 2달 만에 1위 달성', desc: '플레이스 세팅 재구성 + 핵심 키워드 CPC 집중 운영으로 경쟁이 치열한 지역에서 2개월 내 상위 1위 진입. 신환 문의 3.2배 증가.', result: '📈 신환 문의 320% 증가' },
+        { industry: '💄 뷰티·화장품', title: '광고만 하던 가게에서 월 매출 500만원 이상 증가', desc: '단순 광고 집행에서 콘텐츠 기반 마케팅 구조로 전환. 성분 기반 신뢰 콘텐츠와 플레이스 최적화 병행으로 자연 유입 급증.', result: '💰 월 매출 500만원+ 증가' },
+        { industry: '🏥 헬스케어', title: '역삼역 키워드 노출 1위, 공부와 실행으로 만든 성과', desc: '마케팅을 맡기는 것이 아닌 직접 이해하고 실행하는 구조 도입. 교육 후 내부 담당자가 직접 운영하여 지속 가능한 성과 달성.', result: '🥇 핵심 키워드 1위 달성' }
+      ]
+    },
+    cta: {
+      title: '지금 바로 *무료 상담*을\n신청하세요',
+      sub: '현재 마케팅 구조를 진단하고, 업종에 맞는 전략 방향을 무료로 제시해드립니다.\n단순 영업이 아닌, 실제 도움이 되는 전략 대화를 약속드립니다.',
+      phone: '010-7475-7744',
+      region: '전국 (방문 상담 가능)',
+      hours: '평일 09:00 ~ 18:00'
+    }
+  };
+
+  const STORAGE_KEY = 'lks_site_data_v1';
+  const LOGIN_KEY = 'lks_admin_logged_v1';
+  let data = loadData();
+
+  /* ════════════════════════════════
+     LOGIN
+  ════════════════════════════════ */
+  function tryLogin() {
+    const input = document.getElementById('pwInput').value;
+    if (input === ADMIN_PASSWORD) {
+      sessionStorage.setItem(LOGIN_KEY, '1');
+      document.getElementById('loginScreen').classList.add('login-hidden');
+      document.getElementById('loginError').classList.remove('show');
+      initUI();
+    } else {
+      document.getElementById('loginError').classList.add('show');
+      document.getElementById('pwInput').value = '';
+    }
+  }
+  function logout() {
+    if (!confirm('로그아웃 하시겠습니까?\n(저장되지 않은 변경사항은 사라집니다)')) return;
+    sessionStorage.removeItem(LOGIN_KEY);
+    location.reload();
+  }
+  document.getElementById('pwInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') tryLogin();
+  });
+  if (sessionStorage.getItem(LOGIN_KEY) === '1') {
+    document.getElementById('loginScreen').classList.add('login-hidden');
+    initUI();
+  }
+
+  /* ════════════════════════════════
+     DATA LOAD / SAVE
+  ════════════════════════════════ */
+  function loadData() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return deepMerge(JSON.parse(JSON.stringify(DEFAULT_DATA)), parsed);
+      }
+    } catch(e) { console.warn('Load error', e); }
+    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+  function deepMerge(target, source) {
+    for (const k in source) {
+      if (source[k] && typeof source[k] === 'object' && !Array.isArray(source[k])) {
+        target[k] = deepMerge(target[k] || {}, source[k]);
+      } else {
+        target[k] = source[k];
+      }
+    }
+    return target;
+  }
+  function saveLocal() {
+    syncFromInputs();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    toast('✅ 임시 저장되었습니다 (이 브라우저에만)', 'success');
+  }
+  function exportJSON() {
+    syncFromInputs();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('⬇ data.json 다운로드 완료! GitHub에 업로드하세요', 'success');
+  }
+  function previewSite() {
+    syncFromInputs();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    toast('💾 변경사항 저장됨. index.html을 새로고침해서 확인하세요', 'success');
+  }
+
+  /* ════════════════════════════════
+     INPUT BINDING
+  ════════════════════════════════ */
+  function getByPath(obj, path) {
+    return path.split('.').reduce((a, k) => a?.[k], obj);
+  }
+  function setByPath(obj, path, val) {
+    const keys = path.split('.');
+    let cur = obj;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (!cur[keys[i]]) cur[keys[i]] = {};
+      cur = cur[keys[i]];
+    }
+    cur[keys[keys.length - 1]] = val;
+  }
+  function syncFromInputs() {
+    document.querySelectorAll('[data-k]').forEach(el => {
+      setByPath(data, el.dataset.k, el.value);
+    });
+    // Sub-item grids are synced via their own handlers
+  }
+
+  /* ════════════════════════════════
+     RENDER DYNAMIC PANELS
+  ════════════════════════════════ */
+  function renderHeroStats() {
+    const box = document.getElementById('hero-stats');
+    box.innerHTML = data.hero.stats.map((s, i) => `
+      <div class="item-box">
+        <div class="item-box-header">
+          <span class="item-box-num">수치 ${i+1}</span>
+        </div>
+        <div class="field-group" style="margin-bottom:10px">
+          <label class="field-label">숫자 / 단위 / 설명</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <input class="field-input" placeholder="숫자" value="${esc(s.num)}" oninput="data.hero.stats[${i}].num=this.value">
+            <input class="field-input" placeholder="단위 (예: 배+, %)" value="${esc(s.unit)}" oninput="data.hero.stats[${i}].unit=this.value">
+          </div>
+          <input class="field-input" placeholder="설명" value="${esc(s.desc)}" oninput="data.hero.stats[${i}].desc=this.value">
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderProblemItems() {
+    const box = document.getElementById('problem-items');
+    box.innerHTML = data.problem.items.map((it, i) => `
+      <div class="item-box">
+        <div class="item-box-header">
+          <span class="item-box-num">0${i+1}</span>
+        </div>
+        <div class="field-group" style="margin-bottom:8px">
+          <label class="field-label">제목</label>
+          <input class="field-input" value="${esc(it.title)}" oninput="data.problem.items[${i}].title=this.value">
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label">설명</label>
+          <textarea class="field-textarea" rows="2" oninput="data.problem.items[${i}].desc=this.value">${esc(it.desc)}</textarea>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderSolutionSteps() {
+    const box = document.getElementById('solution-steps');
+    box.innerHTML = data.solution.steps.map((s, i) => `
+      <div class="item-box">
+        <div class="item-box-header">
+          <span class="item-box-num">Step ${i+1}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr;gap:8px;margin-bottom:8px">
+          <input class="field-input" placeholder="이모지" value="${esc(s.icon)}" oninput="data.solution.steps[${i}].icon=this.value">
+          <input class="field-input" placeholder="제목" value="${esc(s.title)}" oninput="data.solution.steps[${i}].title=this.value">
+        </div>
+        <textarea class="field-textarea" rows="2" oninput="data.solution.steps[${i}].desc=this.value">${esc(s.desc)}</textarea>
+      </div>
+    `).join('');
+  }
+
+  function renderTargetCards() {
+    const box = document.getElementById('target-cards');
+    box.innerHTML = data.target.cards.map((c, i) => `
+      <div class="item-box">
+        <div class="item-box-header">
+          <span class="item-box-num">업종 ${i+1}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr;gap:8px;margin-bottom:8px">
+          <input class="field-input" placeholder="이모지" value="${esc(c.icon)}" oninput="data.target.cards[${i}].icon=this.value">
+          <input class="field-input" placeholder="영문 업종 라벨" value="${esc(c.industry)}" oninput="data.target.cards[${i}].industry=this.value">
+        </div>
+        <div class="field-group" style="margin-bottom:10px">
+          <label class="field-label">메인 제목 (줄바꿈 Enter)</label>
+          <textarea class="field-textarea" rows="2" oninput="data.target.cards[${i}].title=this.value">${esc(c.title)}</textarea>
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label">특징 리스트</label>
+          ${renderListEditor(c.items, `data.target.cards[${i}].items`)}
+          <button class="btn-add" onclick="addListItem('data.target.cards[${i}].items', renderTargetCards)">+ 항목 추가</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderDiffCompares() {
+    const box = document.getElementById('diff-compares');
+    box.innerHTML = data.diff.compares.map((c, i) => `
+      <div class="item-box">
+        <div class="item-box-header">
+          <span class="item-box-num">비교 ${i+1}</span>
+          <button class="btn-sm danger" onclick="if(confirm('삭제?')){data.diff.compares.splice(${i},1);renderDiffCompares()}">삭제</button>
+        </div>
+        <div class="field-group" style="margin-bottom:8px">
+          <label class="field-label" style="color:#EF4444">❌ 기존 대행사 (나쁜 예)</label>
+          <input class="field-input" value="${esc(c.bad)}" oninput="data.diff.compares[${i}].bad=this.value">
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label" style="color:#10B981">✅ 이경세 연구소 (좋은 예)</label>
+          <input class="field-input" value="${esc(c.good)}" oninput="data.diff.compares[${i}].good=this.value">
+        </div>
+      </div>
+    `).join('') + `<button class="btn-add" onclick="data.diff.compares.push({bad:'',good:''});renderDiffCompares()">+ 비교 항목 추가</button>`;
+  }
+
+  function renderDiffItems() {
+    const box = document.getElementById('diff-items');
+    box.innerHTML = data.diff.items.map((it, i) => `
+      <div class="item-box">
+        <div class="item-box-header">
+          <span class="item-box-num">차별점 ${i+1}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr;gap:8px;margin-bottom:8px">
+          <input class="field-input" placeholder="이모지" value="${esc(it.icon)}" oninput="data.diff.items[${i}].icon=this.value">
+          <input class="field-input" placeholder="제목" value="${esc(it.title)}" oninput="data.diff.items[${i}].title=this.value">
+        </div>
+        <textarea class="field-textarea" rows="2" oninput="data.diff.items[${i}].desc=this.value">${esc(it.desc)}</textarea>
+      </div>
+    `).join('');
+  }
+
+  function renderCurriculumCards() {
+    const box = document.getElementById('curriculum-cards');
+    box.innerHTML = data.curriculum.cards.map((c, i) => `
+      <div class="item-box">
+        <div class="item-box-header">
+          <span class="item-box-num">과정 0${i+1}</span>
+          <button class="btn-sm danger" onclick="if(confirm('삭제?')){data.curriculum.cards.splice(${i},1);renderCurriculumCards()}">삭제</button>
+        </div>
+        <div class="field-group" style="margin-bottom:10px">
+          <label class="field-label">과정 제목</label>
+          <textarea class="field-textarea" rows="2" oninput="data.curriculum.cards[${i}].title=this.value">${esc(c.title)}</textarea>
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label">커리큘럼 항목</label>
+          ${renderListEditor(c.items, `data.curriculum.cards[${i}].items`)}
+          <button class="btn-add" onclick="addListItem('data.curriculum.cards[${i}].items', renderCurriculumCards)">+ 항목 추가</button>
+        </div>
+      </div>
+    `).join('') + `<button class="btn-add" onclick="data.curriculum.cards.push({title:'새 과정',items:['']});renderCurriculumCards()">+ 새 교육 과정 추가</button>`;
+  }
+
+  function renderPricingCards() {
+    const box = document.getElementById('pricing-cards');
+    box.innerHTML = data.pricing.cards.map((c, i) => `
+      <div class="item-box" ${c.featured ? 'style="border-color:var(--orange);border-width:2px"' : ''}>
+        <div class="item-box-header">
+          <span class="item-box-num">Package ${i+1}</span>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--orange);font-weight:700;cursor:pointer">
+            <input type="checkbox" ${c.featured ? 'checked' : ''} onchange="data.pricing.cards.forEach((x,j)=>x.featured=(j===${i})?this.checked:(this.checked?false:x.featured));renderPricingCards()"> ⭐ 추천 플랜
+          </label>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <input class="field-input" placeholder="라벨" value="${esc(c.step)}" oninput="data.pricing.cards[${i}].step=this.value">
+          <input class="field-input" placeholder="패키지명" value="${esc(c.title)}" oninput="data.pricing.cards[${i}].title=this.value">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <input class="field-input" placeholder="가격" value="${esc(c.price)}" oninput="data.pricing.cards[${i}].price=this.value">
+          <input class="field-input" placeholder="단위 (만원 등)" value="${esc(c.unit)}" oninput="data.pricing.cards[${i}].unit=this.value">
+        </div>
+        <input class="field-input" placeholder="가격 설명" value="${esc(c.note)}" oninput="data.pricing.cards[${i}].note=this.value" style="margin-bottom:8px">
+        <div class="field-group" style="margin-bottom:8px">
+          <label class="field-label">포함 기능</label>
+          ${renderListEditor(c.features, `data.pricing.cards[${i}].features`)}
+          <button class="btn-add" onclick="addListItem('data.pricing.cards[${i}].features', renderPricingCards)">+ 기능 추가</button>
+        </div>
+        <input class="field-input" placeholder="하단 총평" value="${esc(c.total)}" oninput="data.pricing.cards[${i}].total=this.value">
+      </div>
+    `).join('');
+  }
+
+  function renderResultsStats() {
+    const box = document.getElementById('results-stats');
+    box.innerHTML = data.results.stats.map((s, i) => `
+      <div class="item-box">
+        <div class="item-box-header">
+          <span class="item-box-num">수치 ${i+1}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <input class="field-input" placeholder="숫자" value="${esc(s.num)}" oninput="data.results.stats[${i}].num=this.value">
+          <input class="field-input" placeholder="단위" value="${esc(s.unit)}" oninput="data.results.stats[${i}].unit=this.value">
+        </div>
+        <textarea class="field-textarea" rows="2" oninput="data.results.stats[${i}].label=this.value">${esc(s.label)}</textarea>
+      </div>
+    `).join('');
+  }
+
+  function renderResultsCases() {
+    const box = document.getElementById('results-cases');
+    box.innerHTML = data.results.cases.map((c, i) => `
+      <div class="item-box">
+        <div class="item-box-header">
+          <span class="item-box-num">사례 ${i+1}</span>
+          <button class="btn-sm danger" onclick="if(confirm('삭제?')){data.results.cases.splice(${i},1);renderResultsCases()}">삭제</button>
+        </div>
+        <input class="field-input" placeholder="업종 태그 (🏥 병원 등)" value="${esc(c.industry)}" oninput="data.results.cases[${i}].industry=this.value" style="margin-bottom:8px">
+        <input class="field-input" placeholder="사례 제목" value="${esc(c.title)}" oninput="data.results.cases[${i}].title=this.value" style="margin-bottom:8px">
+        <textarea class="field-textarea" rows="3" placeholder="설명" oninput="data.results.cases[${i}].desc=this.value" style="margin-bottom:8px">${esc(c.desc)}</textarea>
+        <input class="field-input" placeholder="핵심 성과 (📈 ○○% 증가)" value="${esc(c.result)}" oninput="data.results.cases[${i}].result=this.value">
+      </div>
+    `).join('') + `<button class="btn-add" onclick="data.results.cases.push({industry:'🏥 업종',title:'새 사례',desc:'',result:'📈 성과'});renderResultsCases()">+ 성과 사례 추가</button>`;
+  }
+
+  /* ════════════════════════════════
+     LIST EDITOR HELPER
+  ════════════════════════════════ */
+  function renderListEditor(items, pathExpr) {
+    return `<div class="list-editor">${items.map((it, j) => `
+      <div class="list-row">
+        <input value="${esc(it)}" oninput="${pathExpr}[${j}]=this.value">
+        <button class="btn-sm danger" onclick="if(confirm('삭제?')){${pathExpr}.splice(${j},1);reRenderAll()}">✕</button>
+      </div>`).join('')}</div>`;
+  }
+  function addListItem(pathExpr, cb) {
+    eval(pathExpr).push('');
+    cb();
+  }
+  function reRenderAll() {
+    const active = document.querySelector('.sidebar-nav a.active')?.dataset.panel;
+    if (active) switchPanel(active);
+  }
+
+  /* ════════════════════════════════
+     PANEL SWITCHING
+  ════════════════════════════════ */
+  function switchPanel(name) {
+    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.toggle('active', a.dataset.panel === name));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
+    fillPanel(name);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function fillPanel(name) {
+    // Fill simple inputs
+    document.querySelectorAll(`#panel-${name} [data-k]`).forEach(el => {
+      el.value = getByPath(data, el.dataset.k) ?? '';
+    });
+    // Render dynamic grids
+    const renderers = {
+      hero: renderHeroStats,
+      problem: renderProblemItems,
+      solution: renderSolutionSteps,
+      target: renderTargetCards,
+      diff: () => { renderDiffCompares(); renderDiffItems(); },
+      curriculum: renderCurriculumCards,
+      pricing: renderPricingCards,
+      results: () => { renderResultsStats(); renderResultsCases(); },
+      cta: () => {}
+    };
+    if (renderers[name]) renderers[name]();
+  }
+
+  /* ════════════════════════════════
+     UTILITIES
+  ════════════════════════════════ */
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function toast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  /* ════════════════════════════════
+     INIT
+  ════════════════════════════════ */
+  function initUI() {
+    document.querySelectorAll('.sidebar-nav a').forEach(a => {
+      a.addEventListener('click', () => switchPanel(a.dataset.panel));
+    });
+    fillPanel('hero');
+    // Auto-sync plain inputs on blur
+    document.addEventListener('input', e => {
+      if (e.target.dataset?.k) setByPath(data, e.target.dataset.k, e.target.value);
+    });
+  }
+</script>
+</body>
+</html>
