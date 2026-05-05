@@ -1363,6 +1363,8 @@
     <li><a href="#" onclick="showPage('resources');return false;" data-page="resources">자료실</a></li>
     <li><a href="#" onclick="showPage('blog');return false;" data-page="blog">블로그</a></li>
     <li><a href="#" onclick="showPage('classroom');return false;" data-page="classroom">나의 강의실</a></li>
+        <li><a href="#" onclick="showPage('admin');return false;" data-page="admin" style="color:var(--orange);font-weight:700;">⚙ 관리자</a></li>
+
   </ul>
   <a href="#" onclick="showPage('contact-page');return false;" class="nav-cta">무료 상담 신청</a>
   <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="메뉴 열기">
@@ -1378,6 +1380,8 @@
   <a href="#" onclick="mobileNav('resources')">📁 자료실</a>
   <a href="#" onclick="mobileNav('blog')">✍️ 블로그</a>
   <a href="#" onclick="mobileNav('classroom')">🎬 나의 강의실</a>
+    <a href="#" onclick="mobileNav('admin')" style="color:var(--orange);font-weight:700;">⚙️ 관리자 페이지</a>
+
   <a href="#" onclick="mobileNav('contact-page')" class="mobile-cta">무료 상담 신청 →</a>
 </div>
 
@@ -2918,6 +2922,293 @@
     .blog-detail-title { font-size: 1.5rem; }
   }
 </style>
+<style>
+  /* ── 관리자 로그인 모달 ── */
+  #adminLoginModal {
+    display: none; position: fixed; inset: 0; z-index: 10000;
+    background: rgba(10,12,28,0.85); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+  }
+  #adminLoginModal.open { display: flex; }
+  .admin-login-box {
+    background: var(--white); border-radius: 20px;
+    padding: 48px 44px; width: 100%; max-width: 420px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  .admin-login-logo {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.05rem; color: var(--navy); margin-bottom: 6px;
+  }
+  .admin-login-badge {
+    display: inline-block; background: var(--orange);
+    color: white; font-size: 0.65rem; font-weight: 700;
+    padding: 2px 10px; border-radius: 50px; letter-spacing: 0.06em;
+    margin-bottom: 28px;
+  }
+  .admin-login-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.6rem; color: var(--navy); margin-bottom: 8px;
+  }
+  .admin-login-desc { font-size: 0.83rem; color: var(--gray); margin-bottom: 32px; }
+  .admin-input-group { margin-bottom: 16px; }
+  .admin-input-group label {
+    display: block; font-size: 0.8rem; font-weight: 700;
+    color: var(--navy); margin-bottom: 8px;
+  }
+  .admin-input-group input {
+    width: 100%; padding: 13px 16px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem;
+    outline: none; transition: border-color 0.2s;
+  }
+  .admin-input-group input:focus { border-color: var(--orange); }
+  .admin-login-err {
+    font-size: 0.8rem; color: #dc2626;
+    margin-bottom: 12px; display: none;
+    background: #fef2f2; padding: 10px 14px; border-radius: 8px;
+  }
+  .admin-login-btn {
+    width: 100%; background: var(--navy); color: white;
+    border: none; padding: 15px; border-radius: 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    transition: background 0.2s; margin-top: 4px;
+  }
+  .admin-login-btn:hover { background: var(--orange); }
+  .admin-login-close {
+    position: absolute; top: 16px; right: 16px;
+    background: var(--light-gray); border: none;
+    width: 32px; height: 32px; border-radius: 50%;
+    cursor: pointer; font-size: 1rem; color: var(--gray);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .admin-login-close:hover { background: var(--border); }
+
+  /* ── 관리자 페이지 전체 ── */
+  #page-admin {
+    display: none; min-height: 100vh; padding-top: 68px;
+    background: #F0F2F8;
+  }
+  #page-admin.active { display: block; }
+
+  .admin-topbar {
+    background: var(--navy);
+    padding: 0 40px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 3px solid var(--orange);
+  }
+  .admin-topbar-left {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .admin-topbar-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem; color: white;
+  }
+  .admin-topbar-badge {
+    background: var(--orange); color: white;
+    font-size: 0.65rem; font-weight: 700;
+    padding: 2px 9px; border-radius: 50px;
+    letter-spacing: 0.05em;
+  }
+  .admin-logout-btn {
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.15); padding: 7px 16px;
+    border-radius: 8px; cursor: pointer; font-size: 0.8rem;
+    font-family: 'Noto Sans KR', sans-serif; transition: all 0.2s;
+  }
+  .admin-logout-btn:hover { background: rgba(255,255,255,0.2); color: white; }
+
+  .admin-layout {
+    display: grid; grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 68px - 56px);
+  }
+  .admin-sidebar {
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+  }
+  .admin-sidebar-section {
+    padding: 0 16px;
+    font-size: 0.68rem; font-weight: 700; color: var(--gray);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 8px; margin-top: 20px;
+  }
+  .admin-sidebar-section:first-child { margin-top: 0; }
+  .admin-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 20px; cursor: pointer;
+    font-size: 0.87rem; font-weight: 500; color: var(--text-mid);
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .admin-nav-item:hover { background: var(--light-gray); color: var(--navy); }
+  .admin-nav-item.active {
+    background: var(--orange-pale); color: var(--orange);
+    border-left-color: var(--orange); font-weight: 700;
+  }
+  .admin-nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+  .admin-nav-badge {
+    margin-left: auto; background: var(--orange); color: white;
+    font-size: 0.65rem; font-weight: 700; padding: 1px 7px;
+    border-radius: 50px; min-width: 20px; text-align: center;
+  }
+
+  .admin-content { padding: 32px 36px; overflow-y: auto; }
+
+  /* ── 대시보드 카드 ── */
+  .admin-dash-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    margin-bottom: 32px;
+  }
+  .admin-stat-card {
+    background: var(--white); border-radius: 14px; padding: 24px;
+    border: 1px solid var(--border);
+  }
+  .admin-stat-label {
+    font-size: 0.75rem; color: var(--gray); font-weight: 600;
+    letter-spacing: 0.04em; margin-bottom: 10px;
+  }
+  .admin-stat-num {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 2rem; color: var(--navy);
+  }
+  .admin-stat-num span { font-size: 1rem; color: var(--orange); }
+  .admin-stat-sub { font-size: 0.75rem; color: var(--gray); margin-top: 6px; }
+
+  /* ── 섹션 패널 ── */
+  .admin-panel {
+    background: var(--white); border-radius: 14px;
+    border: 1px solid var(--border); overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .admin-panel-header {
+    padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .admin-panel-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.05rem; color: var(--navy);
+  }
+  .admin-panel-body { padding: 24px; }
+
+  /* ── 버튼 ── */
+  .btn-admin-primary {
+    background: var(--orange); color: white;
+    border: none; padding: 10px 20px; border-radius: 8px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.83rem; font-weight: 700; cursor: pointer;
+    transition: background 0.2s; display: inline-flex;
+    align-items: center; gap: 6px;
+  }
+  .btn-admin-primary:hover { background: var(--orange-light); }
+  .btn-admin-secondary {
+    background: var(--light-gray); color: var(--navy);
+    border: 1px solid var(--border); padding: 10px 18px;
+    border-radius: 8px; font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.83rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-admin-secondary:hover { border-color: var(--orange); color: var(--orange); }
+  .btn-admin-danger {
+    background: #fef2f2; color: #dc2626;
+    border: 1px solid #fecaca; padding: 7px 14px;
+    border-radius: 7px; font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.78rem; font-weight: 700; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-admin-danger:hover { background: #dc2626; color: white; }
+
+  /* ── 글 목록 테이블 ── */
+  .admin-table { width: 100%; border-collapse: collapse; }
+  .admin-table th {
+    text-align: left; padding: 10px 14px;
+    font-size: 0.72rem; font-weight: 700; color: var(--gray);
+    letter-spacing: 0.05em; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    background: var(--light-gray);
+  }
+  .admin-table td {
+    padding: 14px 14px; font-size: 0.85rem;
+    color: var(--text-mid); border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .admin-table tr:last-child td { border-bottom: none; }
+  .admin-table tr:hover td { background: #fafafa; }
+  .admin-cat-badge {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 50px; font-size: 0.7rem; font-weight: 700;
+  }
+  .cat-hospital { background: #dbeafe; color: #1d4ed8; }
+  .cat-pharma   { background: #dcfce7; color: #166534; }
+  .cat-beauty   { background: #fce7f3; color: #9d174d; }
+  .cat-strategy { background: #fef3c7; color: #92400e; }
+  .cat-custom   { background: #f3e8ff; color: #6b21a8; }
+
+  /* ── 글 작성/편집 폼 ── */
+  .admin-write-form { display: flex; flex-direction: column; gap: 18px; }
+  .admin-form-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  .admin-form-group { display: flex; flex-direction: column; gap: 7px; }
+  .admin-form-group label {
+    font-size: 0.8rem; font-weight: 700; color: var(--navy);
+  }
+  .admin-form-group input,
+  .admin-form-group select,
+  .admin-form-group textarea {
+    padding: 11px 14px;
+    border: 1.5px solid var(--border); border-radius: 9px;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 0.87rem;
+    outline: none; transition: border-color 0.2s; color: var(--text-dark);
+  }
+  .admin-form-group input:focus,
+  .admin-form-group select:focus,
+  .admin-form-group textarea:focus { border-color: var(--orange); }
+  .admin-form-group textarea { resize: vertical; min-height: 100px; }
+  .admin-content-textarea { min-height: 280px !important; font-size: 0.83rem !important; line-height: 1.7; }
+  .admin-form-hint {
+    font-size: 0.73rem; color: var(--gray); margin-top: 2px;
+  }
+
+  /* ── 카테고리 관리 ── */
+  .cat-manage-list { display: flex; flex-direction: column; gap: 10px; }
+  .cat-manage-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; background: var(--light-gray);
+    border-radius: 10px; border: 1px solid var(--border);
+  }
+  .cat-manage-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .cat-manage-name { font-weight: 700; font-size: 0.9rem; color: var(--navy); flex: 1; }
+  .cat-manage-count { font-size: 0.78rem; color: var(--gray); }
+  .cat-add-form {
+    display: flex; gap: 10px; margin-top: 16px;
+  }
+  .cat-add-form input {
+    flex: 1; padding: 11px 14px;
+    border: 1.5px solid var(--border); border-radius: 9px;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 0.87rem;
+    outline: none; transition: border-color 0.2s;
+  }
+  .cat-add-form input:focus { border-color: var(--orange); }
+  .cat-color-pick { width: 44px; height: 44px; border: 2px solid var(--border); border-radius: 9px; cursor: pointer; padding: 2px; }
+
+  /* ── 탭 전환 ── */
+  .admin-section { display: none; }
+  .admin-section.active { display: block; }
+
+  /* 반응형 */
+  @media(max-width:900px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .admin-sidebar { display: none; }
+    .admin-dash-grid { grid-template-columns: 1fr 1fr; }
+    .admin-form-row { grid-template-columns: 1fr; }
+    .admin-content { padding: 20px; }
+  }
+</style>
 
 <div id="page-blog" class="subpage">
   <div class="sub-header">
@@ -3822,6 +4113,593 @@
     buildDots();
     update();
   })();
+    /* ════════════════════════════════
+     관리자 JS 초기화
+  ════════════════════════════════ */
+
+  // 기본 관리자 계정
+  const ADMIN_DEFAULT = { id: 'admin', pw: 'admin1234' };
+  function getAdminCreds() {
+    try { return JSON.parse(localStorage.getItem('lks_admin_creds')) || ADMIN_DEFAULT; }
+    catch(e) { return ADMIN_DEFAULT; }
+  }
+
+  const DEFAULT_CATEGORIES = [
+    { key: 'hospital', label: '병원·의원',  color: '#3b82f6', bg: 'linear-gradient(135deg,#1A1F36,#2D3561)' },
+    { key: 'pharma',   label: '제약·바이오', color: '#22c55e', bg: 'linear-gradient(135deg,#1F2D1A,#2D5628)' },
+    { key: 'beauty',   label: '화장품·뷰티', color: '#ec4899', bg: 'linear-gradient(135deg,#3D1F4E,#6B2F7E)' },
+    { key: 'strategy', label: '마케팅 전략', color: '#f59e0b', bg: 'linear-gradient(135deg,#2D1F1A,#5A3428)' },
+  ];
+  function getCategories() {
+    try { return JSON.parse(localStorage.getItem('lks_categories')) || DEFAULT_CATEGORIES; }
+    catch(e) { return DEFAULT_CATEGORIES; }
+  }
+  function saveCategories(cats) {
+    try { localStorage.setItem('lks_categories', JSON.stringify(cats)); } catch(e) {}
+  }
+
+  function openAdminLogin() {
+    document.getElementById('adminLoginModal').classList.add('open');
+    setTimeout(() => document.getElementById('adminId').focus(), 100);
+  }
+  function closeAdminLogin() {
+    document.getElementById('adminLoginModal').classList.remove('open');
+    document.getElementById('adminLoginErr').style.display = 'none';
+    document.getElementById('adminId').value = '';
+    document.getElementById('adminPw').value = '';
+  }
+  function adminLogin() {
+    const id = document.getElementById('adminId').value.trim();
+    const pw = document.getElementById('adminPw').value;
+    const creds = getAdminCreds();
+    if (id === creds.id && pw === creds.pw) {
+      sessionStorage.setItem('lks_admin_logged', '1');
+      closeAdminLogin();
+      enterAdminPage();
+    } else {
+      document.getElementById('adminLoginErr').style.display = 'block';
+      document.getElementById('adminPw').value = '';
+      document.getElementById('adminPw').focus();
+    }
+  }
+  function adminLogout() {
+    sessionStorage.removeItem('lks_admin_logged');
+    _origShowPage('home');
+  }
+  function isAdminLogged() { return sessionStorage.getItem('lks_admin_logged') === '1'; }
+
+  function enterAdminPage() {
+    document.querySelectorAll('.subpage').forEach(p => p.classList.remove('active'));
+    document.getElementById('main-home').classList.add('hidden');
+    document.querySelector('footer').classList.add('hidden');
+    document.getElementById('page-admin').classList.add('active');
+    window.scrollTo(0, 0);
+    refreshAdminData();
+  }
+
+  // showPage 오버라이드 (admin 처리)
+  const _origShowPage = showPage;
+  showPage = function(page) {
+    if (page === 'admin') {
+      if (isAdminLogged()) { enterAdminPage(); }
+      else { openAdminLogin(); }
+      return;
+    }
+    document.getElementById('page-admin').classList.remove('active');
+    _origShowPage(page);
+  };
+
+  function switchAdminTab(tab, navEl) {
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('admin-' + tab).classList.add('active');
+    document.querySelectorAll('.admin-nav-item').forEach(n => n.classList.remove('active'));
+    if (navEl) navEl.classList.add('active');
+    if (tab === 'posts')      renderAdminPostTable();
+    if (tab === 'categories') renderCategoryManager();
+    if (tab === 'write')      initWriteForm();
+    if (tab === 'lectures')   renderAdminLectures();
+    if (tab === 'dashboard')  refreshAdminData();
+  }
+
+  function refreshAdminData() {
+    const cats = getCategories();
+    document.getElementById('dash-post-count').innerHTML = blogPosts.length + '<span>개</span>';
+    document.getElementById('dash-cat-count').innerHTML  = cats.length + '<span>개</span>';
+    document.getElementById('dash-video-count').innerHTML = (typeof videos !== 'undefined' ? videos.length : 0) + '<span>개</span>';
+    document.getElementById('postCountBadge').textContent = blogPosts.length;
+    const last = blogPosts[0];
+    document.getElementById('dash-last-update').textContent = last ? last.date : '—';
+    const recentEl = document.getElementById('dash-recent-posts');
+    const recent = [...blogPosts].slice(0, 5);
+    recentEl.innerHTML = recent.length === 0
+      ? '<p style="color:var(--gray);font-size:0.88rem;">아직 작성된 글이 없습니다.</p>'
+      : `<table class="admin-table"><thead><tr><th>제목</th><th>카테고리</th><th>작성일</th><th>관리</th></tr></thead><tbody>${
+          recent.map(p => `<tr>
+            <td style="font-weight:600">${p.title}</td>
+            <td><span class="admin-cat-badge cat-${p.category}">${p.categoryLabel}</span></td>
+            <td>${p.date}</td>
+            <td><button class="btn-admin-danger" onclick="deletePost('${p.id}')">삭제</button></td>
+          </tr>`).join('')
+        }</tbody></table>`;
+  }
+
+  function renderAdminPostTable() {
+    const tbody = document.getElementById('adminPostTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = blogPosts.length === 0
+      ? '<tr><td colspan="5" style="text-align:center;padding:48px;color:var(--gray);">작성된 글이 없습니다.</td></tr>'
+      : blogPosts.map(p => `<tr>
+          <td style="font-weight:600;max-width:260px;">${p.title}</td>
+          <td><span class="admin-cat-badge cat-${p.category}">${p.categoryLabel}</span></td>
+          <td>${p.date}</td><td>${p.readTime}</td>
+          <td><div style="display:flex;gap:6px;">
+            <button class="btn-admin-secondary" style="padding:6px 12px;font-size:0.75rem;" onclick="editPost('${p.id}')">수정</button>
+            <button class="btn-admin-danger" onclick="deletePost('${p.id}')">삭제</button>
+          </div></td>
+        </tr>`).join('');
+  }
+
+  function initWriteForm(postId) {
+    const cats = getCategories();
+    const sel = document.getElementById('postCategory');
+    if (sel) sel.innerHTML = cats.map(c => `<option value="${c.key}">${c.label}</option>`).join('');
+    if (!postId) {
+      document.getElementById('writeFormTitle').textContent = '새 글 작성';
+      document.getElementById('editPostId').value = '';
+      document.getElementById('postTitle').value = '';
+      document.getElementById('postEmoji').value = '📝';
+      document.getElementById('postDate').value = new Date().toISOString().slice(0,10);
+      document.getElementById('postReadTime').value = '5';
+      document.getElementById('postExcerpt').value = '';
+      document.getElementById('postContent').value = '';
+    }
+  }
+  function clearWriteForm() { initWriteForm(); }
+
+  function savePost() {
+    const id       = document.getElementById('editPostId').value;
+    const title    = document.getElementById('postTitle').value.trim();
+    const catKey   = document.getElementById('postCategory').value;
+    const emoji    = document.getElementById('postEmoji').value.trim() || '📝';
+    const dateVal  = document.getElementById('postDate').value;
+    const readTime = document.getElementById('postReadTime').value || '5';
+    const excerpt  = document.getElementById('postExcerpt').value.trim();
+    const rawContent = document.getElementById('postContent').value.trim();
+
+    if (!title)      { alert('글 제목을 입력해주세요.'); return; }
+    if (!rawContent) { alert('본문 내용을 입력해주세요.'); return; }
+
+    const cats = getCategories();
+    const cat  = cats.find(c => c.key === catKey) || cats[0];
+    const d    = new Date(dateVal || Date.now());
+    const dateFormatted = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+
+    let htmlContent = rawContent;
+    if (!rawContent.includes('<')) {
+      htmlContent = rawContent.split('\n\n').map(p => p.trim() ? `<p>${p.replace(/\n/g,'<br>')}</p>` : '').join('');
+    }
+    const fullContent = `<div class="blog-detail-category">${cat.label}</div>
+      <h1 class="blog-detail-title">${title}</h1>
+      <div class="blog-detail-meta">${dateFormatted} · 읽는 시간 ${readTime}분 · 이경세 마케팅 연구소</div>
+      <div class="blog-detail-content">${htmlContent}</div>`;
+
+    if (id) {
+      const idx = blogPosts.findIndex(p => String(p.id) === id);
+      if (idx !== -1) blogPosts[idx] = { ...blogPosts[idx], title, category: cat.key,
+        categoryLabel: cat.label, emoji, bg: cat.bg || 'linear-gradient(135deg,#1A1F36,#252A47)',
+        date: dateFormatted, readTime: readTime + '분', excerpt, content: fullContent };
+    } else {
+      blogPosts.unshift({ id: 'post_' + Date.now(), category: cat.key, categoryLabel: cat.label,
+        emoji, bg: cat.bg || 'linear-gradient(135deg,#1A1F36,#252A47)',
+        title, excerpt, date: dateFormatted, readTime: readTime + '분', content: fullContent });
+    }
+
+    saveBlogPosts();
+    renderBlog(currentBlogFilter);
+    refreshAdminData();
+    alert('✅ 저장되었습니다!');
+    switchAdminTab('posts', null);
+  }
+
+  function editPost(id) {
+    const post = blogPosts.find(p => String(p.id) === String(id));
+    if (!post) return;
+    switchAdminTab('write', null);
+    setTimeout(() => {
+      document.getElementById('writeFormTitle').textContent = '글 수정';
+      document.getElementById('editPostId').value  = String(post.id);
+      document.getElementById('postTitle').value   = post.title;
+      document.getElementById('postCategory').value = post.category;
+      document.getElementById('postEmoji').value   = post.emoji || '📝';
+      document.getElementById('postDate').value    = (post.date || '').replace(/\./g,'-');
+      document.getElementById('postReadTime').value = parseInt(post.readTime) || 5;
+      document.getElementById('postExcerpt').value = post.excerpt || '';
+      const match = post.content.match(/<div class="blog-detail-content">([\s\S]*?)<\/div>\s*$/);
+      document.getElementById('postContent').value = match ? match[1].trim() : post.content;
+    }, 50);
+  }
+
+  function deletePost(id) {
+    if (!confirm('이 글을 삭제하시겠습니까?')) return;
+    const idx = blogPosts.findIndex(p => String(p.id) === String(id));
+    if (idx !== -1) blogPosts.splice(idx, 1);
+    saveBlogPosts();
+    renderBlog(currentBlogFilter);
+    renderAdminPostTable();
+    refreshAdminData();
+  }
+
+  function renderCategoryManager() {
+    const cats = getCategories();
+    const listEl = document.getElementById('categoryList');
+    const statsEl = document.getElementById('catStatsPanel');
+    if (!listEl) return;
+
+    listEl.innerHTML = cats.map(c => `
+      <div class="cat-manage-item">
+        <div class="cat-manage-dot" style="background:${c.color}"></div>
+        <div class="cat-manage-name">${c.label}</div>
+        <div class="cat-manage-count" style="font-size:0.72rem;color:var(--gray);">키: ${c.key}</div>
+        <div class="cat-manage-count">${blogPosts.filter(p=>p.category===c.key).length}개</div>
+        <button class="btn-admin-danger" style="padding:5px 10px;font-size:0.72rem;" onclick="deleteCategory('${c.key}')">삭제</button>
+      </div>`).join('');
+
+    const total = Math.max(blogPosts.length, 1);
+    if (statsEl) statsEl.innerHTML = cats.map(c => {
+      const cnt = blogPosts.filter(p => p.category === c.key).length;
+      const pct = Math.round(cnt / total * 100);
+      return `<div style="margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:0.85rem;font-weight:600;color:var(--navy);">${c.label}</span>
+          <span style="font-size:0.82rem;color:var(--gray);">${cnt}개</span>
+        </div>
+        <div style="background:var(--light-gray);border-radius:50px;height:8px;overflow:hidden;">
+          <div style="width:${cnt===0?2:Math.max(pct,4)}%;height:100%;background:${c.color};border-radius:50px;transition:width 0.5s;"></div>
+        </div></div>`;
+    }).join('');
+
+    // 블로그 필터 버튼 갱신
+    const filterBar = document.querySelector('.blog-filter-bar');
+    if (filterBar) {
+      filterBar.innerHTML = `<button class="filter-btn active" onclick="filterBlog('all',this)">전체</button>` +
+        cats.map(c => `<button class="filter-btn" onclick="filterBlog('${c.key}',this)">${c.label}</button>`).join('');
+    }
+    const sel = document.getElementById('postCategory');
+    if (sel) sel.innerHTML = cats.map(c => `<option value="${c.key}">${c.label}</option>`).join('');
+  }
+
+  function addCategory() {
+    const key   = document.getElementById('newCatKey').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
+    const label = document.getElementById('newCatLabel').value.trim();
+    const color = document.getElementById('newCatColor').value;
+    if (!key)   { alert('영문 키를 입력해주세요.'); return; }
+    if (!label) { alert('한글 이름을 입력해주세요.'); return; }
+    const cats = getCategories();
+    if (cats.find(c => c.key === key)) { alert('이미 존재하는 키입니다.'); return; }
+    const hex = color.replace('#','');
+    const r = parseInt(hex.substr(0,2),16), g = parseInt(hex.substr(2,2),16), b = parseInt(hex.substr(4,2),16);
+    const darkBg = `linear-gradient(135deg,rgb(${Math.round(r*.3)},${Math.round(g*.3)},${Math.round(b*.3)}),rgb(${Math.round(r*.5)},${Math.round(g*.5)},${Math.round(b*.5)}))`;
+    cats.push({ key, label, color, bg: darkBg });
+    saveCategories(cats);
+    document.getElementById('newCatKey').value = '';
+    document.getElementById('newCatLabel').value = '';
+    renderCategoryManager();
+    alert(`✅ "${label}" 카테고리가 추가되었습니다.`);
+  }
+
+  function deleteCategory(key) {
+    const cnt = blogPosts.filter(p => p.category === key).length;
+    if (cnt > 0 && !confirm(`이 카테고리에 ${cnt}개의 글이 있습니다. 삭제하시겠습니까?`)) return;
+    const cats = getCategories().filter(c => c.key !== key);
+    saveCategories(cats);
+    renderCategoryManager();
+  }
+
+  function renderAdminLectures() {
+    const el = document.getElementById('adminLectureList');
+    if (!el || typeof videos === 'undefined') return;
+    el.innerHTML = videos.length === 0
+      ? '<p style="color:var(--gray);font-size:0.88rem;">등록된 강의가 없습니다.</p>'
+      : `<table class="admin-table"><thead><tr><th>제목</th><th>카테고리</th><th>유형</th><th>등록일</th><th>관리</th></tr></thead><tbody>${
+          videos.map((v,i) => `<tr>
+            <td style="font-weight:600">${v.title}</td>
+            <td>${v.category||'—'}</td>
+            <td>${v.type==='file'?'📁 파일':'🔗 URL'}</td>
+            <td>${v.date||'—'}</td>
+            <td><button class="btn-admin-danger" onclick="deleteVideo(${i})">삭제</button></td>
+          </tr>`).join('')
+        }</tbody></table>`;
+  }
+
+  function changePassword() {
+    const cur    = document.getElementById('pwCurrent').value;
+    const newPw  = document.getElementById('pwNew').value;
+    const conf   = document.getElementById('pwConfirm').value;
+    const creds  = getAdminCreds();
+    if (cur !== creds.pw)    { alert('현재 비밀번호가 올바르지 않습니다.'); return; }
+    if (newPw.length < 6)   { alert('새 비밀번호는 6자 이상이어야 합니다.'); return; }
+    if (newPw !== conf)      { alert('새 비밀번호가 일치하지 않습니다.'); return; }
+    try {
+      localStorage.setItem('lks_admin_creds', JSON.stringify({ id: creds.id, pw: newPw }));
+      alert('✅ 비밀번호가 변경되었습니다.');
+      ['pwCurrent','pwNew','pwConfirm'].forEach(id => document.getElementById(id).value = '');
+    } catch(e) { alert('저장 실패. 다시 시도해주세요.'); }
+  }
+
+  function resetBlogData() {
+    if (!confirm('블로그 데이터를 초기 샘플로 되돌리겠습니까?\n직접 작성한 글은 모두 삭제됩니다.')) return;
+    blogPosts.length = 0;
+    DEFAULT_BLOG_POSTS.forEach(p => blogPosts.push(JSON.parse(JSON.stringify(p))));
+    saveBlogPosts();
+    renderBlog('all');
+    refreshAdminData();
+    alert('✅ 초기화 완료');
+  }
+
+  /* 초기화 */
+  renderVideos();
 </script>
+</script>
+<!-- 관리자 로그인 모달 -->
+ <!-- 관리자 메인 페이지 -->
+<div id="page-admin">
+  <!-- 관리자 상단바 -->
+  <div class="admin-topbar">
+    <div class="admin-topbar-left">
+      <div class="admin-topbar-title">이경세 마케팅 연구소</div>
+      <div class="admin-topbar-badge">관리자</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span style="font-size:0.8rem;color:rgba(255,255,255,0.5);">관리자님 환영합니다</span>
+      <button class="admin-logout-btn" onclick="adminLogout()">로그아웃</button>
+      <button class="admin-logout-btn" onclick="showPage('home')" style="background:rgba(255,107,44,0.2);border-color:rgba(255,107,44,0.4);color:var(--orange);">← 홈으로</button>
+    </div>
+  </div>
+
+  <div class="admin-layout">
+    <!-- 사이드바 -->
+    <div class="admin-sidebar">
+      <div class="admin-sidebar-section">대시보드</div>
+      <div class="admin-nav-item active" onclick="switchAdminTab('dashboard', this)">
+        <span class="nav-icon">📊</span> 대시보드
+      </div>
+      <div class="admin-sidebar-section">콘텐츠 관리</div>
+      <div class="admin-nav-item" onclick="switchAdminTab('posts', this)">
+        <span class="nav-icon">✍️</span> 블로그 글 관리
+        <span class="admin-nav-badge" id="postCountBadge">0</span>
+      </div>
+      <div class="admin-nav-item" onclick="switchAdminTab('write', this)">
+        <span class="nav-icon">➕</span> 새 글 작성
+      </div>
+      <div class="admin-nav-item" onclick="switchAdminTab('categories', this)">
+        <span class="nav-icon">🏷️</span> 카테고리 관리
+      </div>
+      <div class="admin-sidebar-section">사이트 관리</div>
+      <div class="admin-nav-item" onclick="switchAdminTab('lectures', this)">
+        <span class="nav-icon">🎬</span> 강의 관리
+      </div>
+      <div class="admin-nav-item" onclick="switchAdminTab('settings', this)">
+        <span class="nav-icon">⚙️</span> 설정
+      </div>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="admin-content">
+
+      <!-- 대시보드 -->
+      <div class="admin-section active" id="admin-dashboard">
+        <h2 style="font-family:'Black Han Sans',sans-serif;font-size:1.5rem;color:var(--navy);margin-bottom:24px;">대시보드</h2>
+        <div class="admin-dash-grid">
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">📝 블로그 포스트</div>
+            <div class="admin-stat-num" id="dash-post-count">0<span>개</span></div>
+            <div class="admin-stat-sub">총 발행된 글</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">🏷️ 카테고리</div>
+            <div class="admin-stat-num" id="dash-cat-count">0<span>개</span></div>
+            <div class="admin-stat-sub">등록된 카테고리</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">🎬 강의 영상</div>
+            <div class="admin-stat-num" id="dash-video-count">0<span>개</span></div>
+            <div class="admin-stat-sub">강의실 등록 영상</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">🕐 마지막 업데이트</div>
+            <div class="admin-stat-num" style="font-size:1.1rem;" id="dash-last-update">—</div>
+            <div class="admin-stat-sub">최근 글 작성일</div>
+          </div>
+        </div>
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <div class="admin-panel-title">최근 블로그 글</div>
+            <button class="btn-admin-primary" onclick="switchAdminTab('write', null)">➕ 새 글 작성</button>
+          </div>
+          <div class="admin-panel-body" id="dash-recent-posts"></div>
+        </div>
+      </div>
+
+      <!-- 블로그 글 관리 -->
+      <div class="admin-section" id="admin-posts">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+          <h2 style="font-family:'Black Han Sans',sans-serif;font-size:1.5rem;color:var(--navy);">블로그 글 관리</h2>
+          <button class="btn-admin-primary" onclick="switchAdminTab('write', null)">➕ 새 글 작성</button>
+        </div>
+        <div class="admin-panel">
+          <div class="admin-panel-body" style="padding:0;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width:40%">제목</th>
+                  <th>카테고리</th>
+                  <th>작성일</th>
+                  <th>읽는 시간</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody id="adminPostTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 새 글 작성 / 수정 -->
+      <div class="admin-section" id="admin-write">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+          <h2 style="font-family:'Black Han Sans',sans-serif;font-size:1.5rem;color:var(--navy);" id="writeFormTitle">새 글 작성</h2>
+          <button class="btn-admin-secondary" onclick="switchAdminTab('posts', null)">← 목록으로</button>
+        </div>
+        <div class="admin-panel">
+          <div class="admin-panel-body">
+            <div class="admin-write-form">
+              <input type="hidden" id="editPostId">
+              <div class="admin-form-group">
+                <label>글 제목 *</label>
+                <input type="text" id="postTitle" placeholder="예) 네이버 플레이스 상위노출 전략">
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label>카테고리 *</label>
+                  <select id="postCategory">
+                    <!-- 동적으로 채워짐 -->
+                  </select>
+                </div>
+                <div class="admin-form-group">
+                  <label>썸네일 이모지</label>
+                  <input type="text" id="postEmoji" placeholder="예) 🏥 💊 💄 📊" maxlength="4">
+                </div>
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label>작성일</label>
+                  <input type="date" id="postDate">
+                </div>
+                <div class="admin-form-group">
+                  <label>읽는 시간 (분)</label>
+                  <input type="number" id="postReadTime" placeholder="예) 5" min="1" max="60">
+                </div>
+              </div>
+              <div class="admin-form-group">
+                <label>요약 (썸네일에 표시)</label>
+                <textarea id="postExcerpt" placeholder="글의 핵심 내용을 2~3문장으로 요약해주세요." style="min-height:80px;"></textarea>
+              </div>
+              <div class="admin-form-group">
+                <label>본문 내용 *</label>
+                <div class="admin-form-hint">HTML 태그 사용 가능: &lt;h3&gt;소제목&lt;/h3&gt;, &lt;p&gt;단락&lt;/p&gt;, &lt;div class="highlight-box"&gt;강조박스&lt;/div&gt;</div>
+                <textarea class="admin-content-textarea" id="postContent" placeholder="본문을 작성하세요...&#10;&#10;HTML을 사용하거나 일반 텍스트로 작성할 수 있습니다.&#10;&#10;예시)&#10;&lt;h3&gt;소제목&lt;/h3&gt;&#10;&lt;p&gt;단락 내용&lt;/p&gt;&#10;&lt;div class=&quot;highlight-box&quot;&gt;💡 포인트 강조 내용&lt;/div&gt;"></textarea>
+              </div>
+              <div style="display:flex;gap:12px;justify-content:flex-end;padding-top:8px;border-top:1px solid var(--border);">
+                <button class="btn-admin-secondary" onclick="clearWriteForm()">초기화</button>
+                <button class="btn-admin-primary" onclick="savePost()" style="padding:12px 28px;">💾 저장하기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 카테고리 관리 -->
+      <div class="admin-section" id="admin-categories">
+        <h2 style="font-family:'Black Han Sans',sans-serif;font-size:1.5rem;color:var(--navy);margin-bottom:24px;">카테고리 관리</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+          <!-- 현재 카테고리 목록 -->
+          <div class="admin-panel">
+            <div class="admin-panel-header">
+              <div class="admin-panel-title">등록된 카테고리</div>
+            </div>
+            <div class="admin-panel-body">
+              <div class="cat-manage-list" id="categoryList"></div>
+              <!-- 새 카테고리 추가 -->
+              <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+                <div style="font-size:0.85rem;font-weight:700;color:var(--navy);margin-bottom:12px;">➕ 새 카테고리 추가</div>
+                <div class="cat-add-form">
+                  <input type="text" id="newCatKey" placeholder="영문 키 (예: health)">
+                  <input type="text" id="newCatLabel" placeholder="한글 이름 (예: 건강정보)">
+                  <input type="color" id="newCatColor" class="cat-color-pick" value="#FF6B2C">
+                  <button class="btn-admin-primary" onclick="addCategory()">추가</button>
+                </div>
+                <div class="admin-form-hint" style="margin-top:8px;">영문 키는 소문자·숫자·언더스코어만 가능합니다.</div>
+              </div>
+            </div>
+          </div>
+          <!-- 카테고리 통계 -->
+          <div class="admin-panel">
+            <div class="admin-panel-header">
+              <div class="admin-panel-title">카테고리별 글 수</div>
+            </div>
+            <div class="admin-panel-body" id="catStatsPanel"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 강의 관리 -->
+      <div class="admin-section" id="admin-lectures">
+        <h2 style="font-family:'Black Han Sans',sans-serif;font-size:1.5rem;color:var(--navy);margin-bottom:24px;">강의 관리</h2>
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <div class="admin-panel-title">등록된 강의 목록</div>
+            <button class="btn-admin-primary" onclick="showPage('classroom')">강의실 바로가기 →</button>
+          </div>
+          <div class="admin-panel-body" id="adminLectureList">
+            <p style="color:var(--gray);font-size:0.88rem;">강의실 페이지에서 영상을 업로드·관리할 수 있습니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 설정 -->
+      <div class="admin-section" id="admin-settings">
+        <h2 style="font-family:'Black Han Sans',sans-serif;font-size:1.5rem;color:var(--navy);margin-bottom:24px;">설정</h2>
+        <div class="admin-panel">
+          <div class="admin-panel-header"><div class="admin-panel-title">🔒 비밀번호 변경</div></div>
+          <div class="admin-panel-body">
+            <div style="max-width:400px;display:flex;flex-direction:column;gap:14px;">
+              <div class="admin-form-group">
+                <label>현재 비밀번호</label>
+                <input type="password" id="pwCurrent" placeholder="현재 비밀번호">
+              </div>
+              <div class="admin-form-group">
+                <label>새 비밀번호</label>
+                <input type="password" id="pwNew" placeholder="새 비밀번호 (6자 이상)">
+              </div>
+              <div class="admin-form-group">
+                <label>새 비밀번호 확인</label>
+                <input type="password" id="pwConfirm" placeholder="새 비밀번호 재입력">
+              </div>
+              <button class="btn-admin-primary" onclick="changePassword()" style="align-self:flex-start;">변경 저장</button>
+            </div>
+          </div>
+        </div>
+        <div class="admin-panel" style="margin-top:20px;">
+          <div class="admin-panel-header"><div class="admin-panel-title">🗑️ 데이터 초기화</div></div>
+          <div class="admin-panel-body">
+            <p style="color:var(--gray);font-size:0.88rem;margin-bottom:16px;">블로그 포스트를 기본 샘플 데이터로 초기화합니다. 직접 작성한 글은 삭제됩니다.</p>
+            <button class="btn-admin-danger" onclick="resetBlogData()">블로그 데이터 초기화</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </div><!-- /admin-layout -->
+</div><!-- /page-admin -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="adminLoginModal">
+  <div class="admin-login-box">
+    <button class="admin-login-close" onclick="closeAdminLogin()">✕</button>
+    <div class="admin-login-logo">이경세 마케팅 연구소</div>
+    <div class="admin-login-badge">ADMIN</div>
+    <div class="admin-login-title">관리자 로그인</div>
+    <div class="admin-login-desc">관리자 계정으로 로그인하여 콘텐츠를 관리하세요.</div>
+    <div class="admin-input-group">
+      <label>아이디</label>
+      <input type="text" id="adminId" placeholder="admin" onkeydown="if(event.key==='Enter')adminLogin()">
+    </div>
+    <div class="admin-input-group">
+      <label>비밀번호</label>
+      <input type="password" id="adminPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()">
+    </div>
+    <div id="adminLoginErr" class="admin-login-err">⚠️ 아이디 또는 비밀번호가 올바르지 않습니다.</div>
+    <button class="admin-login-btn" onclick="adminLogin()">로그인</button>
+  </div>
+</div>
 </body>
 </html>
