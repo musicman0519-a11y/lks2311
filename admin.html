@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 페이지 | 이경세 마케팅 연구소</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
+  <style>
+    body { font-family: 'Pretendard', -apple-system, sans-serif; }
+  </style>
+</head>
+<body class="bg-zinc-50">
+  
+  <!-- 로그인 화면 -->
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+      <h1 class="text-2xl font-bold mb-6 text-center">관리자 로그인</h1>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">이메일</label>
+          <input type="email" id="email" class="w-full px-4 py-2 border rounded-lg" placeholder="admin@k-marketinglab.com" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">비밀번호</label>
+          <input type="password" id="password" class="w-full px-4 py-2 border rounded-lg" required>
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700">로그인</button>
+        <p id="loginError" class="text-red-600 text-sm hidden"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- 관리자 대시보드 -->
+  <div id="adminDashboard" class="hidden">
+    <nav class="bg-white border-b">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold">이경세 마케팅 연구소 관리자</h1>
+        <button id="logoutBtn" class="px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded">로그아웃</button>
+      </div>
+    </nav>
+
+    <div class="max-w-5xl mx-auto px-4 py-8">
+      <div class="bg-white p-8 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-6">새 블로그 글 작성</h2>
+        
+        <form id="postForm" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium mb-2">글 제목 *</label>
+            <input type="text" id="postTitle" class="w-full px-4 py-2 border rounded-lg" placeholder="네이버 플레이스 상위노출 전략" required>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">카테고리 *</label>
+            <select id="postCategory" class="w-full px-4 py-2 border rounded-lg" required>
+              <option value="">카테고리 선택</option>
+              <option value="병원·의원">병원·의원</option>
+              <option value="제약·바이오">제약·바이오</option>
+              <option value="화장품·뷰티">화장품·뷰티</option>
+              <option value="마케팅 전략">마케팅 전략</option>
+              <option value="SNS·광고">SNS·광고</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">썸네일 이모지</label>
+            <input type="text" id="postThumbnail" class="w-full px-4 py-2 border rounded-lg" placeholder="🏥" maxlength="2">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">읽는 시간 (분)</label>
+            <input type="number" id="postReadTime" class="w-full px-4 py-2 border rounded-lg" placeholder="5" min="1">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">요약 (썸네일)</label>
+            <textarea id="postSummary" class="w-full px-4 py-3 border rounded-lg" rows="3" placeholder="이 글의 핵심 내용을 2-3줄로 요약하세요"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">본문 내용 * (HTML 가능)</label>
+            <textarea id="postContent" class="w-full px-4 py-3 border rounded-lg font-mono text-sm" rows="15" placeholder="<h3>소제목</h3>&#10;<p>본문 내용...</p>" required></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">이미지 업로드 (선택)</label>
+            <input type="file" id="imageUpload" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
+            <p class="text-xs text-zinc-500 mt-1">업로드한 이미지 URL을 본문에 삽입할 수 있습니다</p>
+            <div id="uploadedImageUrl" class="mt-2 hidden">
+              <p class="text-sm font-medium">업로드된 이미지 URL:</p>
+              <input type="text" id="imageUrlDisplay" readonly class="w-full px-3 py-2 bg-zinc-100 border rounded text-sm mt-1">
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <button type="submit" class="flex-1 bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 font-medium">발행하기</button>
+            <button type="button" id="resetBtn" class="px-6 py-3 border rounded-lg hover:bg-zinc-50">초기화</button>
+          </div>
+        </form>
+
+        <div id="successMessage" class="mt-6 p-4 bg-emerald-50 text-emerald-800 rounded-lg hidden">
+          ✅ 글이 성공적으로 발행되었습니다!
+        </div>
+        <div id="errorMessage" class="mt-6 p-4 bg-red-50 text-red-800 rounded-lg hidden"></div>
+      </div>
+
+      <!-- 발행된 글 목록 -->
+      <div class="bg-white p-8 rounded-xl shadow-lg mt-8">
+        <h2 class="text-2xl font-bold mb-6">발행된 글 목록</h2>
+        <div id="postsList" class="space-y-4">
+          <p class="text-zinc-500">로딩 중...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, storage } from './firebase-init.js';
+    import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+    import { collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+    import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-storage.js";
+
+    const loginScreen = document.getElementById('loginScreen');
+    const adminDashboard = document.getElementById('adminDashboard');
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const postForm = document.getElementById('postForm');
+    const resetBtn = document.getElementById('resetBtn');
+    const imageUpload = document.getElementById('imageUpload');
+    const uploadedImageUrl = document.getElementById('uploadedImageUrl');
+    const imageUrlDisplay = document.getElementById('imageUrlDisplay');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // 로그인 상태 확인
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginScreen.classList.add('hidden');
+        adminDashboard.classList.remove('hidden');
+        loadPosts();
+      } else {
+        loginScreen.classList.remove('hidden');
+        adminDashboard.classList.add('hidden');
+      }
+    });
+
+    // 로그인
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        loginError.classList.add('hidden');
+      } catch (error) {
+        loginError.textContent = '로그인 실패: ' + error.message;
+        loginError.classList.remove('hidden');
+      }
+    });
+
+    // 로그아웃
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth);
+    });
+
+    // 이미지 업로드
+    imageUpload.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        const storageRef = ref(storage, `blog-images/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        
+        imageUrlDisplay.value = downloadURL;
+        uploadedImageUrl.classList.remove('hidden');
+        
+        alert('이미지 업로드 성공! URL을 복사하여 본문에 사용하세요.');
+      } catch (error) {
+        alert('이미지 업로드 실패: ' + error.message);
+      }
+    });
+
+    // 글 발행
+    postForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      successMessage.classList.add('hidden');
+      errorMessage.classList.add('hidden');
+
+      const title = document.getElementById('postTitle').value;
+      const category = document.getElementById('postCategory').value;
+      const thumbnail = document.getElementById('postThumbnail').value || '📝';
+      const readTime = parseInt(document.getElementById('postReadTime').value) || 5;
+      const summary = document.getElementById('postSummary').value;
+      const content = document.getElementById('postContent').value;
+
+      try {
+        await addDoc(collection(db, 'blogPosts'), {
+          title: title,
+          category: category,
+          thumbnail: thumbnail,
+          readTime: readTime,
+          summary: summary,
+          content: content,
+          createdAt: serverTimestamp(),
+          date: new Date().toISOString().split('T')[0]
+        });
+
+        successMessage.classList.remove('hidden');
+        postForm.reset();
+        uploadedImageUrl.classList.add('hidden');
+        loadPosts();
+
+        setTimeout(() => {
+          successMessage.classList.add('hidden');
+        }, 3000);
+
+      } catch (error) {
+        errorMessage.textContent = '발행 실패: ' + error.message;
+        errorMessage.classList.remove('hidden');
+      }
+    });
+
+    // 초기화
+    resetBtn.addEventListener('click', () => {
+      postForm.reset();
+      uploadedImageUrl.classList.add('hidden');
+    });
+
+    // 발행된 글 목록 불러오기
+    async function loadPosts() {
+      const postsList = document.getElementById('postsList');
+      postsList.innerHTML = '<p class="text-zinc-500">로딩 중...</p>';
+
+      try {
+        const q = query(collection(db, 'blogPosts'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          postsList.innerHTML = '<p class="text-zinc-500">아직 발행된 글이 없습니다.</p>';
+          return;
+        }
+
+        let html = '';
+        querySnapshot.forEach((doc) => {
+          const post = doc.data();
+          html += `
+            <div class="border rounded-lg p-4 flex justify-between items-center hover:bg-zinc-50">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">${post.thumbnail}</span>
+                  <h3 class="font-bold">${post.title}</h3>
+                </div>
+                <p class="text-sm text-zinc-600 mt-1">${post.category} · ${post.date}</p>
+              </div>
+              <button onclick="deletePost('${doc.id}')" class="px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded">삭제</button>
+            </div>
+          `;
+        });
+
+        postsList.innerHTML = html;
+      } catch (error) {
+        postsList.innerHTML = '<p class="text-red-600">로딩 실패: ' + error.message + '</p>';
+      }
+    }
+
+    // 글 삭제
+    window.deletePost = async (postId) => {
+      if (!confirm('정말 삭제하시겠습니까?')) return;
+
+      try {
+        await deleteDoc(doc(db, 'blogPosts', postId));
+        loadPosts();
+        alert('삭제되었습니다.');
+      } catch (error) {
+        alert('삭제 실패: ' + error.message);
+      }
+    };
+  </script>
+
+</body>
+</html>
