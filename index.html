@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>이경세 마케팅 연구소 | 브랜드 대형유통 입점 컨설팅</title>
+<meta name="description" content="올리브영·H&B·홈쇼핑·면세점·아마존 입점 컨설팅. MD가 OK 하는 온라인 검증부터 만듭니다. 올리브영 입점 당월 5천만원, 아마존 USA 300%↑ 실전 노하우.">
+<meta property="og:title" content="올리브영 입점, 'MD가 OK 하는 상태'부터 만듭니다">
+<meta property="og:description" content="브랜드를 올리브영 매대에 올려본 사람이 직접 — 올리브영·H&B·홈쇼핑·해외 입점 컨설팅. 이경세 마케팅 연구소">
+<meta property="og:image" content="https://k-marketinglab.com/images/og-namecard.jpg">
+<meta property="og:url" content="https://k-marketinglab.com/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0f172a; --navy2:#111c33; --card:#13203a; --line:rgba(255,255,255,.09);
+    --orange:#f97316; --orange2:#fb8a3c; --ink:#eef2f8; --mut:#93a0b6; --mut2:#6f7e96;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;background:var(--navy);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .ac{color:var(--orange)}
+  section{position:relative;padding:84px 0}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);margin-bottom:16px}
+  h2{font-size:clamp(26px,4.5vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.22;margin-bottom:18px}
+  .lead{color:var(--mut);font-size:clamp(15px,2vw,17px);max-width:640px}
+  .reveal{opacity:0;transform:translateY(26px);transition:.8s cubic-bezier(.16,1,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* header */
+  header{position:fixed;top:0;left:0;right:0;z-index:100;height:62px;display:flex;align-items:center;background:rgba(15,23,42,.78);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px;letter-spacing:-.01em}
+  .brand .sq{width:9px;height:9px;background:var(--orange);border-radius:2px;transform:rotate(45deg)}
+  .nav{display:flex;align-items:center;gap:26px}
+  .nav a{font-size:14px;font-weight:600;color:var(--mut);transition:.2s}
+  .nav a:hover{color:var(--ink)}
+  .htools{display:flex;align-items:center;gap:12px}
+  .langs{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .langs button{background:none;border:none;color:var(--mut);font-size:12px;font-weight:700;padding:7px 12px;cursor:pointer}
+  .langs button.on{background:var(--orange);color:#1a1206}
+  .cta-sm{background:var(--orange);color:#1a1206;font-weight:800;font-size:13.5px;padding:10px 16px;border-radius:10px;white-space:nowrap}
+  .menu-btn{display:none;background:none;border:none;color:var(--ink);cursor:pointer}
+  @media(max-width:880px){.nav{display:none}.menu-btn{display:grid;place-items:center}}
+
+  /* hero */
+  .hero{padding-top:128px;padding-bottom:70px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(60% 50% at 82% 0%,rgba(249,115,22,.18),transparent 60%),
+    radial-gradient(50% 50% at 0% 40%,rgba(37,72,140,.22),transparent 60%);z-index:0}
+  .hero .wrap{position:relative;z-index:1}
+  .hbadge{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.04em;color:var(--orange2);border:1px solid rgba(249,115,22,.4);background:rgba(249,115,22,.08);padding:7px 14px;border-radius:999px;margin-bottom:24px}
+  .hero h1{font-size:clamp(32px,6vw,58px);font-weight:800;letter-spacing:-.035em;line-height:1.15;margin-bottom:22px}
+  .hero h1 .ac{color:var(--orange2)}
+  .hero p.sub{font-size:clamp(15px,2.2vw,18px);color:#c4cee0;max-width:600px;margin-bottom:14px}
+  .hero .credit{font-size:14px;color:#fff;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:30px}
+  .hero .credit .dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex:none}
+  .hbtns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:46px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:800;border-radius:13px;padding:15px 24px;font-size:15px;cursor:pointer;border:none}
+  .btn.pri{background:var(--orange);color:#1a1206}
+  .btn.sec{background:rgba(255,255,255,.07);color:#fff;border:1px solid var(--line)}
+  .hstats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:680px}
+  .hstats .s{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .hstats .n{font-size:clamp(22px,3.4vw,30px);font-weight:800;color:var(--orange2);letter-spacing:-.02em;line-height:1}
+  .hstats .l{font-size:12.5px;color:var(--mut);margin-top:8px}
+
+  /* the order / secret */
+  .secret{background:linear-gradient(180deg,rgba(249,115,22,.05),transparent 60%)}
+  .bigq{font-size:clamp(24px,4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.3;margin-bottom:26px}
+  .secret p{color:#c4cee0;font-size:16px;max-width:760px;margin-bottom:14px}
+  .secret p .hl{color:#fff;font-weight:700}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:30px}
+  .flow .step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;font-weight:700;font-size:15px}
+  .flow .step.on{border-color:rgba(249,115,22,.5);background:linear-gradient(180deg,rgba(249,115,22,.12),var(--card));color:var(--orange2)}
+  .flow .arr{color:var(--orange);font-size:20px;font-weight:800}
+
+  /* method 4 steps */
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:14px}
+  @media(max-width:880px){.grid4{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.grid4{grid-template-columns:1fr}}
+  .mcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .mcard.key{border-color:rgba(249,115,22,.5);background:linear-gradient(180deg,rgba(249,115,22,.09),var(--card))}
+  .mcard .no{width:38px;height:38px;border-radius:11px;background:rgba(249,115,22,.16);color:var(--orange2);font-weight:800;display:grid;place-items:center;margin-bottom:16px;font-size:16px}
+  .mcard.key .no{background:var(--orange);color:#1a1206}
+  .mcard h3{font-size:17px;font-weight:800;margin-bottom:8px}
+  .mcard p{font-size:13.5px;color:var(--mut);line-height:1.6}
+  .tag{display:inline-block;font-size:10px;font-weight:800;color:var(--orange2);letter-spacing:.06em;margin-left:7px;vertical-align:middle}
+
+  /* comparison */
+  .compare{background:var(--navy2)}
+  .ctable{margin-top:20px;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+  .crow{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+  .crow:last-child{border-bottom:none}
+  .crow>div{padding:16px 20px;font-size:14.5px;display:flex;align-items:center;gap:10px}
+  .crow .bad{color:var(--mut);background:rgba(255,255,255,.02)}
+  .crow .good{color:var(--ink);font-weight:600;background:rgba(249,115,22,.05);border-left:1px solid var(--line)}
+  .crow .x{color:#e2625a;font-weight:800}
+  .crow .o{color:var(--orange2);font-weight:800}
+  .chead .bad,.chead .good{font-weight:800;font-size:13px;letter-spacing:.02em;text-transform:uppercase}
+  .chead .good{color:var(--orange2)}
+
+  /* proof cases */
+  .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+  @media(max-width:880px){.cases{grid-template-columns:1fr}}
+  .case{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;position:relative;overflow:hidden}
+  .case::before{content:"";position:absolute;right:-30px;top:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(249,115,22,.16),transparent 70%)}
+  .case .cat{font-size:12px;font-weight:700;color:var(--mut2);margin-bottom:12px}
+  .case .big{font-size:30px;font-weight:800;color:var(--orange2);letter-spacing:-.02em;line-height:1}
+  .case h3{font-size:16px;font-weight:800;margin:12px 0 8px}
+  .case p{font-size:13px;color:var(--mut);line-height:1.6}
+
+  /* about */
+  .about{background:var(--navy2)}
+  .ab-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;margin-top:10px}
+  @media(max-width:880px){.ab-grid{grid-template-columns:1fr}}
+  .ab-stats{display:flex;gap:26px;margin:24px 0}
+  .ab-stats .n{font-size:30px;font-weight:800;color:var(--orange2);letter-spacing:-.02em}
+  .ab-stats .l{font-size:12.5px;color:var(--mut)}
+  .quote{border-left:3px solid var(--orange);padding:14px 18px;background:var(--card);border-radius:0 12px 12px 0;font-size:15px;color:#d8e0ec;line-height:1.7}
+  .ab-photo{border-radius:20px;overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;background:#0a1120}
+  .ab-photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(.2) contrast(1.03)}
+
+  /* pricing */
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+  @media(max-width:880px){.pgrid{grid-template-columns:1fr}}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px}
+  .pcard.feat{border-color:rgba(249,115,22,.5);position:relative}
+  .pcard .ph{font-size:12px;font-weight:700;color:var(--orange2);letter-spacing:.04em;margin-bottom:8px}
+  .pcard h3{font-size:19px;font-weight:800;margin-bottom:6px}
+  .pcard .price{font-size:24px;font-weight:800;color:var(--ink);margin:12px 0}
+  .pcard ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:9px}
+  .pcard li{font-size:13.5px;color:var(--mut);padding-left:20px;position:relative}
+  .pcard li::before{content:"✓";position:absolute;left:0;color:var(--orange2);font-weight:800}
+  .badge-top{position:absolute;top:-11px;right:18px;background:var(--orange);color:#1a1206;font-size:11px;font-weight:800;padding:4px 11px;border-radius:999px}
+
+  /* contact */
+  .contact{background:linear-gradient(180deg,var(--navy),var(--navy2))}
+  .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:20px}
+  @media(max-width:880px){.cgrid{grid-template-columns:1fr}}
+  .form{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px}
+  .form label{display:block;font-size:12.5px;font-weight:700;color:var(--mut);margin:14px 0 6px}
+  .form input,.form select,.form textarea{width:100%;background:var(--navy);border:1px solid var(--line);border-radius:11px;padding:13px;color:var(--ink);font-family:inherit;font-size:14px}
+  .form textarea{min-height:84px;resize:vertical}
+  .form .btn{width:100%;margin-top:20px}
+  .cinfo .crow2{display:flex;gap:13px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .cinfo .crow2:last-child{border-bottom:none}
+  .cinfo .ic{width:42px;height:42px;border-radius:12px;background:rgba(249,115,22,.12);color:var(--orange2);display:grid;place-items:center;flex:none}
+  .cinfo .t{font-size:12px;color:var(--mut)}
+  .cinfo .v{font-size:15.5px;font-weight:700}
+  .kakao{display:flex;align-items:center;justify-content:center;gap:9px;background:#FEE500;color:#191600;border-radius:13px;padding:15px;font-weight:800;font-size:15px;margin-top:18px}
+
+  /* footer */
+  footer{background:var(--navy);border-top:1px solid var(--line);padding:40px 0 50px;color:var(--mut2);font-size:13px;line-height:1.9}
+  footer .fnm{color:var(--ink);font-weight:800;font-size:16px;margin-bottom:10px}
+
+  .scrollup{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:50%;background:var(--orange);color:#1a1206;border:none;display:grid;place-items:center;cursor:pointer;opacity:0;visibility:hidden;transition:.3s;z-index:90;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+  .scrollup.on{opacity:1;visibility:visible}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="sq"></span><span data-k="brand">이경세 마케팅 연구소</span></div>
+    <nav class="nav">
+      <a href="#order" data-k="nav1">순서의 비밀</a>
+      <a href="#method" data-k="nav2">진행 4단계</a>
+      <a href="#proof" data-k="nav3">실적</a>
+      <a href="#about" data-k="nav4">대표 소개</a>
+      <a href="#pricing" data-k="nav5">비용</a>
+    </nav>
+    <div class="htools">
+      <div class="langs"><button id="lk" class="on" onclick="setLang('kr')">KR</button><button id="le" onclick="setLang('en')">EN</button></div>
+      <a href="#contact" class="cta-sm" data-k="navcta">무료 입점 진단</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <span class="hbadge" data-k="hbadge">브랜드 대형유통 입점 컨설팅</span>
+    <h1 data-k="hh1">올리브영, '신청'으로는 안 들어갑니다.<br><span class="ac">MD가 OK 하는 상태부터 만듭니다.</span></h1>
+    <p class="sub" data-k="hsub">대형 유통 입점은 영업이 아니라 '검증'입니다. 온라인 매출·검색 데이터를 먼저 세팅해, MD가 거절할 수 없는 브랜드로 만들어 입점시킵니다.</p>
+    <div class="credit"><span class="dot"></span><span data-k="hcredit">브랜드를 올리브영 매대에 올려본 사람이 직접 합니다</span></div>
+    <div class="hbtns">
+      <a href="#contact" class="btn pri" data-k="hbtn1">내 브랜드 무료 진단받기 →</a>
+      <a href="#proof" class="btn sec" data-k="hbtn2">실적 보기</a>
+    </div>
+    <div class="hstats">
+      <div class="s reveal"><div class="n">5,000만원</div><div class="l" data-k="hs1">올리브영 입점 당월 매출</div></div>
+      <div class="s reveal"><div class="n">300%↑</div><div class="l" data-k="hs2">아마존 USA 매출 성장</div></div>
+      <div class="s reveal"><div class="n">9억</div><div class="l" data-k="hs3">제약사 OEM 계약</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- THE ORDER -->
+<section class="secret" id="order">
+  <div class="wrap reveal">
+    <div class="eyebrow" data-k="ord_eb">The Order · 순서의 비밀</div>
+    <div class="bigq" data-k="ord_q">대형 유통은 영업이 아니라 <span class="ac">검증</span>입니다.</div>
+    <p data-k="ord_p1"><span class="hl">MD는 모험을 하지 않습니다.</span> 이미 시장에서 팔리고 있는 브랜드만 매대에 올립니다.</p>
+    <p data-k="ord_p2">그래서 입점 '신청' 전에 — 네이버 검색·쇼핑 상위, 리뷰, 자사몰 매출 같은 <span class="hl">'수요 증거'를 먼저 세팅</span>해야 협상 테이블에 앉을 수 있습니다. 무작정 신청한 브랜드는 거절당하고, 검증된 브랜드만 입점합니다.</p>
+    <p data-k="ord_p3">이 <span class="hl">순서</span>를 아는 컨설팅이 입점 성공률을 바꿉니다.</p>
+    <div class="flow">
+      <div class="step on" data-k="fl1">온라인 세팅</div><span class="arr">→</span>
+      <div class="step on" data-k="fl2">매출·검색 검증</div><span class="arr">→</span>
+      <div class="step" data-k="fl3">대형유통 입점</div>
+    </div>
+  </div>
+</section>
+
+<!-- METHOD -->
+<section id="method">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow" data-k="m_eb">How it works</div>
+    <h2 data-k="m_h2">진단부터 <span class="ac">입점 후 생존</span>까지 4단계</h2>
+    <p class="lead" data-k="m_lead">"들어가는 것"이 절반, "안 빠지는 것"이 전쟁입니다. 입점 후 매대 유지까지 책임집니다.</p></div>
+    <div class="grid4">
+      <div class="mcard reveal"><div class="no">1</div><h3 data-k="m1h">입점 진단</h3><p data-k="m1p">MD 관점 체크리스트로 현재 검증 수준 점검. "내 제품도 되나?"부터 판별합니다.</p></div>
+      <div class="mcard reveal"><div class="no">2</div><h3 data-k="m2h">온라인 검증 세팅</h3><p data-k="m2p">네이버 검색·쇼핑 상위, 리뷰, 자사몰 매출로 '진짜 수요'를 증명합니다.</p></div>
+      <div class="mcard reveal"><div class="no">3</div><h3 data-k="m3h">입점 제안·협상</h3><p data-k="m3p">MD가 신뢰하는 매출·키워드 데이터로 제안서를 설계하고 협상합니다.</p></div>
+      <div class="mcard key reveal"><div class="no">4</div><h3 data-k="m4h">입점 후 생존<span class="tag" data-k="m4tag">CORE</span></h3><p data-k="m4p">매대에서 빠지지 않게 재주문·회전율 관리. 들어가는 건 절반, 유지가 전쟁입니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="compare">
+  <div class="wrap reveal">
+    <div class="eyebrow" data-k="c_eb">Differentiation · 차별점</div>
+    <h2 data-k="c_h2">일반 벤더·대행사와 <span class="ac">무엇이 다른가</span></h2>
+    <div class="ctable">
+      <div class="crow chead"><div class="bad" data-k="ch_bad">일반 입점 벤더·대행사</div><div class="good" data-k="ch_good">이경세 마케팅 연구소</div></div>
+      <div class="crow"><div class="bad"><span class="x">✕</span><span data-k="cb1">무작정 입점 신청 → 잦은 거절</span></div><div class="good"><span class="o">✓</span><span data-k="cg1">온라인 검증 먼저 → 입점 성공률↑</span></div></div>
+      <div class="crow"><div class="bad"><span class="x">✕</span><span data-k="cb2">입점만 시키고 끝</span></div><div class="good"><span class="o">✓</span><span data-k="cg2">입점 후 매대 유지·재주문 관리</span></div></div>
+      <div class="crow"><div class="bad"><span class="x">✕</span><span data-k="cb3">실무 안 해본 컨설턴트</span></div><div class="good"><span class="o">✓</span><span data-k="cg3">직접 올리브영·아마존 입점시킨 실무자</span></div></div>
+      <div class="crow"><div class="bad"><span class="x">✕</span><span data-k="cb4">단일 채널만</span></div><div class="good"><span class="o">✓</span><span data-k="cg4">올리브영·H&B·홈쇼핑·면세점·해외</span></div></div>
+      <div class="crow"><div class="bad"><span class="x">✕</span><span data-k="cb5">선불 비용만</span></div><div class="good"><span class="o">✓</span><span data-k="cg5">성과기반(석세스피) 협의 가능</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section id="proof">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow" data-k="p_eb">Track record · 실적</div>
+    <h2 data-k="p_h2">말이 아니라 <span class="ac">숫자</span>로 증명합니다</h2></div>
+    <div class="cases">
+      <div class="case reveal"><div class="cat" data-k="pc1cat">화장품 · 올리브영</div><div class="big">5,000만원</div><h3 data-k="pc1h">베노라이트 입점 당월 매출</h3><p data-k="pc1p">키워드·이슈 마케팅으로 검증 후 올리브영 입점. 입점 당월 매출 100%↑, Allure 대표상품 선정.</p></div>
+      <div class="case reveal"><div class="cat" data-k="pc2cat">화장품 · 글로벌</div><div class="big">300%↑</div><h3 data-k="pc2h">아마존 USA 매출 성장</h3><p data-k="pc2p">브이업 패치 아마존 USA 키워드 노출·브랜딩으로 매출 300% 성장. Q10 싱가포르 1,000%↑.</p></div>
+      <div class="case reveal"><div class="cat" data-k="pc3cat">건기식 · OEM</div><div class="big">9억</div><h3 data-k="pc3h">제약사 OEM/ODM 계약</h3><p data-k="pc3p">콜라겐 BDF 제안·소싱으로 파미노·퍼슨제약 계약 체결. GS홈쇼핑·와디즈·코레일 입점 다수.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow" data-k="a_eb">About · 대표 소개</div>
+    <h2 data-k="a_h2">에이전시가 아니라, <span class="ac">직접 입점시킨 실무자</span></h2></div>
+    <div class="ab-grid">
+      <div class="reveal">
+        <p class="lead" data-k="a_p">화장품·건강기능식품 BM. 올리브영·H&B 채널 런칭, 제약사 OEM 계약, 아마존 USA·Q10 싱가포르 글로벌 진출까지 — 실전 프로젝트에서 직접 기획·실행해 온 마케터입니다.</p>
+        <div class="ab-stats">
+          <div><div class="n">10년+</div><div class="l" data-k="a_s1">유통·마케팅 경력</div></div>
+          <div><div class="n">올리브영</div><div class="l" data-k="a_s2">·H&B·홈쇼핑 입점</div></div>
+          <div><div class="n">글로벌</div><div class="l" data-k="a_s3">아마존·Q10·라쿠텐</div></div>
+        </div>
+        <div class="quote" data-k="a_q">"제품은 좋은데 유통이 막혀 고생하시는 대표님들을 너무 많이 봤습니다. 직접 올리브영에 넣어본 사람으로서, 그 길을 가장 빠르게 안내해 드리겠습니다." — 이경세</div>
+      </div>
+      <div class="ab-photo reveal"><img src="https://k-marketinglab.com/images/gallery-02-bni-speech.jpg" alt="이경세 대표"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow" data-k="pr_eb">Pricing · 진행 방식</div>
+    <h2 data-k="pr_h2">브랜드 단계에 맞춰 <span class="ac">설계합니다</span></h2>
+    <p class="lead" data-k="pr_lead">정해진 패키지보다, 진단 후 브랜드 상황에 맞춘 설계를 우선합니다. 성과기반(석세스피) 협의도 가능합니다.</p></div>
+    <div class="pgrid">
+      <div class="pcard reveal"><div class="ph">STEP 1</div><h3 data-k="pr1h">입점 진단</h3><div class="price" data-k="pr1price">무료</div><ul><li data-k="pr1a">MD 관점 검증 수준 점검</li><li data-k="pr1b">핵심 키워드·경쟁 분석</li><li data-k="pr1c">입점 가능성 리포트 제공</li></ul></div>
+      <div class="pcard feat reveal"><div class="badge-top" data-k="pr2badge">핵심</div><div class="ph">STEP 2</div><h3 data-k="pr2h">온라인 검증 세팅</h3><div class="price" data-k="pr2price">상담 후 설계</div><ul><li data-k="pr2a">네이버 검색·쇼핑 상위 구축</li><li data-k="pr2b">리뷰·자사몰 매출 데이터 확보</li><li data-k="pr2c">(필요시) 와디즈·홈쇼핑 검증</li></ul></div>
+      <div class="pcard reveal"><div class="ph">STEP 3·4</div><h3 data-k="pr3h">입점 협상·운영</h3><div class="price" data-k="pr3price">성과기반 협의</div><ul><li data-k="pr3a">MD 제안서·협상 대행</li><li data-k="pr3b">입점 후 매대 유지·재주문</li><li data-k="pr3c">해외 채널 진출 지원</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow" data-k="ct_eb">Contact · 무료 진단</div>
+    <h2 data-k="ct_h2">내 브랜드, <span class="ac">올리브영 입점 가능성</span>부터 확인하세요</h2>
+    <p class="lead" data-k="ct_lead">영업 전화 없이 리포트로 보내드립니다. 제품·현황만 남겨주세요.</p></div>
+    <div class="cgrid">
+      <div class="form reveal">
+        <label data-k="f_name">성함 *</label><input id="f-name" type="text">
+        <label data-k="f_brand">브랜드/제품 *</label><input id="f-brand" type="text">
+        <label data-k="f_phone">연락처 *</label><input id="f-phone" type="tel">
+        <label data-k="f_cat">카테고리</label>
+        <select id="f-cat"><option data-k="f_cat0">선택해주세요</option><option data-k="f_cat1">화장품·뷰티</option><option data-k="f_cat2">건강기능식품</option><option data-k="f_cat3">헬스케어</option><option data-k="f_cat4">기타</option></select>
+        <label data-k="f_msg">문의 내용</label><textarea id="f-msg"></textarea>
+        <button class="btn pri" onclick="submitForm()" data-k="f_btn">무료 진단 신청하기 →</button>
+      </div>
+      <div class="cinfo reveal">
+        <div class="crow2"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div><div class="t" data-k="i_phone">전화·문자</div><div class="v">010-7475-7744</div></div></div>
+        <div class="crow2"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></div><div><div class="t" data-k="i_mail">이메일</div><div class="v">lks2311@naver.com</div></div></div>
+        <div class="crow2"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg></div><div><div class="t" data-k="i_time">상담 시간</div><div class="v" data-k="i_time_v">평일 09:00 ~ 18:00</div></div></div>
+        <div class="crow2"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="t" data-k="i_area">대상</div><div class="v" data-k="i_area_v">화장품·건기식·헬스케어 브랜드</div></div></div>
+        <a class="kakao" href="https://open.kakao.com/o/sV7ZHjJf" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.9 3 3 6.3 3 10.4c0 2.6 1.8 4.9 4.4 6.2-.2.6-.7 2.5-.8 2.9 0 0 0 .3.2.3.1.1.3 0 .3 0 .4-.1 2.8-1.9 3.6-2.4.4.05.9.08 1.3.08 5.1 0 9-3.3 9-7.4S17.1 3 12 3z"/></svg><span data-k="i_kakao">카카오톡으로 상담하기</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fnm" data-k="ft_nm">이경세 마케팅 연구소</div>
+    <div data-k="ft_desc">브랜드 대형유통 입점 컨설팅 · 화장품 · 건강기능식품 · 헬스케어</div>
+    <div style="margin-top:8px">📞 010-7475-7744 · ✉ lks2311@naver.com · k-marketinglab.com</div>
+    <div style="margin-top:8px" data-k="ft_chan">올리브영 · H&B · 홈쇼핑 · 면세점 · 아마존 입점 · Korea Market Entry</div>
+    <div style="margin-top:10px">© 2026 이경세 마케팅 연구소. All rights reserved.</div>
+  </div>
+</footer>
+
+<button class="scrollup" id="su" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const T = {
+  en:{
+    brand:"K-Marketing Lab", nav1:"The Order", nav2:"4 Steps", nav3:"Track Record", nav4:"About", nav5:"Pricing", navcta:"Free Check",
+    hbadge:"Brand → Korea Retail Entry Consulting",
+    hh1:"Olive Young won't let you in on application alone.<br><span class='ac'>We build the state where the MD says yes.</span>",
+    hsub:"Major retail isn't sales — it's validation. We set up your online sales & search data first, making your brand impossible for an MD to reject.",
+    hcredit:"Run by someone who has actually put brands on Olive Young shelves",
+    hbtn1:"Get a free brand check →", hbtn2:"See track record",
+    hs1:"Olive Young first-month sales", hs2:"Amazon USA sales growth", hs3:"Pharma OEM contract",
+    ord_eb:"The Order", ord_q:"Major retail isn't sales — it's <span class='ac'>validation</span>.",
+    ord_p1:"<span class='hl'>MDs don't gamble.</span> They only shelve brands that already sell.",
+    ord_p2:"So before you apply, you build <span class='hl'>demand evidence first</span> — Naver search & shopping rank, reviews, store sales. (Korea runs on Naver, not Google.) Brands that apply cold get rejected; validated brands get in.",
+    ord_p3:"Knowing this <span class='hl'>sequence</span> is what changes your odds.",
+    fl1:"Online setup", fl2:"Sales validation", fl3:"Retail entry",
+    m_eb:"How it works", m_h2:"From diagnosis to <span class='ac'>staying on the shelf</span>",
+    m_lead:"Getting in is half the battle; staying on the shelf is the war. We see it through to shelf retention.",
+    m1h:"Entry diagnosis", m1p:"Check readiness against an MD-perspective checklist — does YOUR product qualify?",
+    m2h:"Online validation", m2p:"Prove real demand via Naver search/shopping rank, reviews and store sales.",
+    m3h:"Proposal & negotiation", m3p:"Build and negotiate the proposal with the sales & keyword data MDs trust.",
+    m4h:"Survive after entry", m4tag:"CORE", m4p:"Keep your spot — reorder & turnover management. Getting in is half; staying is the war.",
+    c_eb:"Differentiation", c_h2:"How we differ from <span class='ac'>vendors & agencies</span>",
+    ch_bad:"Typical entry vendor / agency", ch_good:"K-Marketing Lab",
+    cb1:"Cold applications → frequent rejection", cg1:"Online validation first → higher success",
+    cb2:"Gets you in, then done", cg2:"Shelf retention & reorder management",
+    cb3:"Consultants who never operated", cg3:"An operator who placed it himself",
+    cb4:"Single channel only", cg4:"Olive Young · H&B · home shopping · global",
+    cb5:"Upfront fees only", cg5:"Success-based terms available",
+    p_eb:"Track record", p_h2:"Proven by <span class='ac'>numbers</span>, not talk",
+    pc1cat:"Cosmetics · Olive Young", pc1h:"Venolight first-month sales", pc1p:"Validated via keyword/issue marketing, then entered Olive Young. +100% first month, Allure top pick.",
+    pc2cat:"Cosmetics · Global", pc2h:"Amazon USA sales growth", pc2p:"V-up patch grew 300% on Amazon USA via keyword & branding. Q10 Singapore +1,000%.",
+    pc3cat:"Health-food · OEM", pc3h:"Pharma OEM/ODM contract", pc3p:"Collagen BDF sourcing & proposals closed Pamino & Person Pharm. Many GS Home Shopping · Wadiz · Korail placements.",
+    a_eb:"About", a_h2:"Not an agency — <span class='ac'>an operator who got it on the shelf</span>",
+    a_p:"Cosmetics & health-food brand manager. Olive Young / H&B channel launches, pharma OEM contracts, Amazon USA & Q10 Singapore global expansion — planned and executed first-hand.",
+    a_s1:"Retail & marketing", a_s2:"·H&B·home shopping", a_s3:"Amazon·Q10·Rakuten",
+    a_q:"\"I've met too many founders with great products but no way onto the shelf. As someone who actually placed products in Olive Young, I'll guide you down that path — fast.\" — Lee Kyungse",
+    pr_eb:"Pricing", pr_h2:"Designed for <span class='ac'>your brand's stage</span>",
+    pr_lead:"Rather than fixed packages, we design around your brand after diagnosis. Success-based terms available.",
+    pr1h:"Entry diagnosis", pr1price:"Free", pr1a:"MD-perspective readiness check", pr1b:"Keyword & competitor analysis", pr1c:"Entry-potential report",
+    pr2badge:"Core", pr2h:"Online validation setup", pr2price:"Designed after consult", pr2a:"Naver search/shopping ranking", pr2b:"Reviews & store sales data", pr2c:"(If needed) Wadiz/home-shopping proof",
+    pr3h:"Negotiation & ops", pr3price:"Success-based", pr3a:"MD proposal & negotiation", pr3b:"Shelf retention & reorder", pr3c:"Global channel expansion",
+    ct_eb:"Contact", ct_h2:"Check your <span class='ac'>Olive Young entry potential</span> first",
+    ct_lead:"We reply with a report — no sales calls. Just leave your product & current status.",
+    f_name:"Name *", f_brand:"Brand/Product *", f_phone:"Contact *", f_cat:"Category",
+    f_cat0:"Please select", f_cat1:"Cosmetics·Beauty", f_cat2:"Health food", f_cat3:"Healthcare", f_cat4:"Other",
+    f_msg:"Message", f_btn:"Request free check →",
+    i_phone:"Call·Text", i_mail:"Email", i_time:"Hours", i_time_v:"Mon–Fri 09:00–18:00",
+    i_area:"For", i_area_v:"Cosmetics·health-food·healthcare brands", i_kakao:"Chat on KakaoTalk",
+    ft_nm:"K-Marketing Lab", ft_desc:"Brand → Korea retail entry consulting · Cosmetics · Health food · Healthcare",
+    ft_chan:"Olive Young · H&B · Home Shopping · Duty-free · Amazon · Korea Market Entry"
+  }
+};
+const $=id=>document.getElementById(id);
+const KR={}; document.querySelectorAll("[data-k]").forEach(el=>KR[el.getAttribute("data-k")]=el.innerHTML);
+function setLang(l){
+  $("lk").classList.toggle("on",l==="kr"); $("le").classList.toggle("on",l==="en");
+  document.documentElement.lang=l;
+  const dict=l==="kr"?KR:T.en;
+  document.querySelectorAll("[data-k]").forEach(el=>{const k=el.getAttribute("data-k"); if(dict[k]!==undefined)el.innerHTML=dict[k]; else if(KR[k]!==undefined)el.innerHTML=KR[k];});
+}
+function submitForm(){
+  const n=$("f-name").value.trim(), b=$("f-brand").value.trim(), p=$("f-phone").value.trim();
+  if(!n||!b||!p){alert(document.documentElement.lang==="en"?"Please fill name, brand and contact.":"성함·브랜드·연락처를 입력해주세요.");return;}
+  const body=encodeURIComponent(`[입점 진단 신청]\n성함: ${n}\n브랜드/제품: ${b}\n연락처: ${p}\n카테고리: ${$("f-cat").value}\n문의: ${$("f-msg").value}`);
+  location.href=`mailto:lks2311@naver.com?subject=${encodeURIComponent("[입점 진단 신청] "+b)}&body=${body}`;
+}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+addEventListener("scroll",()=>$("su").classList.toggle("on",scrollY>600));
+</script>
+</body>
+</html>
